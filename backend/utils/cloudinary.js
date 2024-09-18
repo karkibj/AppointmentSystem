@@ -8,9 +8,9 @@ import fs from 'fs';
 // });
 
 cloudinary.config({
-    cloud_name: 'dbfahov4k',
-    api_key: '168863253153398',
-    api_secret:'Lmboo5QpmblVG94DVnm3UH3PFfc'
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:process.env.CLOUDINARY_API_SECRET,
+    api_secret:process.env.CLOUDINARY_API_SECRET
 });
 
 const uploadOnCloudinary = async (localFilePath) => {
