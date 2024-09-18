@@ -1,0 +1,146 @@
+/* General Container Setup */
+.registration-container {
+  display: flex;
+  min-height: 90vh;
+  /* justify-content: center; */
+  justify-content: space-around;
+  align-items: center;
+  background-color: #f5f6fa;
+}
+
+/* Left Panel - Branding & Information */
+.left-panel {
+  width: 40%;
+  background-color: #6c63ff;
+  color: white;
+  padding: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.left-panel h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.left-panel p {
+  font-size: 1.2em;
+  margin-bottom: 40px;
+}
+
+.image-mockup {
+  height: 300px;
+  background: url('https://i.pinimg.com/564x/aa/01/30/aa01306d3a0426c2125191caf2f955bd.jpg') no-repeat center center;
+  background-size: cover;
+  border-radius: 15px;
+}
+
+/* Right Panel - Form */
+.right-panel {
+  width: 35%;
+  padding: 40px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.right-panel h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.doctor-create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group label {
+  font-size: 1.1em;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  padding: 12px;
+  font-size: 1em;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.form-group input:focus {
+  border-color: #6c63ff;
+  outline: none;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background-color: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  background-color: #554fb1;
+}
+
+.alternative-login {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.auth-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.auth-btn {
+  padding: 12px 30px;
+  font-size: 1em;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.google-btn {
+  background-color: #db4437;
+  color: white;
+}
+
+.apple-btn {
+  background-color: #000;
+  color: white;
+}
+
+.google-btn:hover, .apple-btn:hover {
+  opacity: 0.8;
+}
+
+.message {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #d9534f;
+}
+
+.message.success {
+  color: #5cb85c;
+}
+
+a {
+  color: #6c63ff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

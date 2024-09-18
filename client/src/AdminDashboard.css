@@ -1,0 +1,176 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .admin-dashboard {
+    display: flex;
+  }
+  
+  /* Sidebar Styles */
+  .sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    height: 100vh;
+    color: #ecf0f1;
+  }
+  
+  .sidebar-header {
+    padding: 20px;
+    text-align: center;
+    background-color: #1a252f;
+    font-size: 20px;
+  }
+  
+  .sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-nav ul li {
+    margin: 15px 0;
+  }
+  
+  .sidebar-nav ul li a {
+    color: #ecf0f1;
+    padding: 10px 20px;
+    display: block;
+    text-decoration: none;
+  }
+  
+  .sidebar-nav ul li a:hover {
+    background-color: #34495e;
+  }
+  
+  /* Main Content Styles */
+  .main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f1f1f1;
+  }
+  
+  /* Top Bar */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .search-bar input {
+    padding: 8px;
+    width: 300px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  
+  .top-bar-icons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .notification-icon, .profile-icon {
+    margin-left: 20px;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* Dashboard Overview */
+  .dashboard-overview h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .overview-cards {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .card {
+    background-color: #fff;
+    padding: 20px;
+    flex: 1;
+    margin: 0 10px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .card h3 {
+    font-size: 18px;
+    color: #3498db;
+  }
+  
+  .card p {
+    font-size: 24px;
+    margin-top: 10px;
+    color: #333;
+  }
+  
+  /* Recent Activity */
+  .recent-activity h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .activity-table th, .activity-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .activity-table th {
+    background-color: #f9f9f9;
+  }
+  
+  .activity-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Quick Actions */
+  .quick-actions h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .quick-actions-grid {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .action-btn {
+    background-color: #3498db;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .action-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  @media (max-width: 768px) {
+    .overview-cards, .quick-actions-grid {
+      flex-direction: column;
+    }
+  
+    .card, .action-btn {
+      margin-bottom: 20px;
+    }
+  }
+  

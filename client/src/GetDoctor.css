@@ -1,0 +1,10 @@
+.doctor-container {
+    padding: 150px;
+  }
+  
+  .doctor-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+  
