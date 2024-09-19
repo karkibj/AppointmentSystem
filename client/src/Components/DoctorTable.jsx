@@ -1,0 +1,51 @@
+import React from 'react';
+
+const DoctorTable = ({ doctors, onDelete, onShowAvailabilityForm }) => {
+  return (
+    <table className="min-w-full bg-white border rounded-lg">
+      <thead>
+        <tr>
+          <th className="py-3 px-4 bg-gray-200 border-b">Profile</th>
+          <th className="py-3 px-4 bg-gray-200 border-b">Name</th>
+          <th className="py-3 px-4 bg-gray-200 border-b">Email</th>
+          <th className="py-3 px-4 bg-gray-200 border-b">Phone</th>
+          <th className="py-3 px-4 bg-gray-200 border-b">Specialization</th>
+          <th className="py-3 px-4 bg-gray-200 border-b">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {doctors.map((doctor) => (
+          <tr key={doctor._id}>
+            <td className="py-3 px-4 border-b text-center">
+              <img
+                src={doctor?.userId?.profilePicture || 'https://via.placeholder.com/40'}
+                alt={doctor?.userId?.name}
+                className="rounded-full w-10 h-10"
+              />
+            </td>
+            <td className="py-3 px-4 border-b">{doctor?.userId?.name}</td>
+            <td className="py-3 px-4 border-b">{doctor?.userId?.email}</td>
+            <td className="py-3 px-4 border-b">{doctor?.userId?.phone}</td>
+            <td className="py-3 px-4 border-b">{doctor?.specialization}</td>
+            <td className="py-3 px-4 border-b space-x-2">
+              <button
+                className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded"
+                onClick={() => onShowAvailabilityForm(doctor._id)}
+              >
+                Add Availability
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"
+                onClick={() => onDelete(doctor._id)}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default DoctorTable;

@@ -1,20 +1,30 @@
 import mongoose from "mongoose";
 
-const AvailabilitySchema = new mongoose.Schema({
-    day: {
-        type: String, // or Enum if you want to limit days to specific values
+const TimeSlotSchema = new mongoose.Schema({
+    time: {
+        type: String,
         required: true
     },
-    timeslot: {
-        type:[String],
-        
+    status: {
+        type: String,
+        enum: ['available', 'reserved'],
+        message:"{VALUE} is not valid ",
+        default: 'available'
+    }
+});
+
+const AvailabilitySchema = new mongoose.Schema({
+    day: {
+        type: String,  
+        required: true
     },
+    timeslot: [TimeSlotSchema], 
     startTime: {
         type: String,
         required: true
     },
     endTime: {
-        type:String,
+        type: String,
         required: true
     }
 });
@@ -29,7 +39,7 @@ const DoctorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    availability: [AvailabilitySchema]
+    availability: [AvailabilitySchema]  // Array of AvailabilitySchema
 });
 
 export const Doctor = mongoose.model('Doctor', DoctorSchema);

@@ -5,9 +5,9 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 const verifyUser = async (req, res, next) => {
   try {
     // Retrieve token from cookies
-    // const token = req.headers.authorization?.split(' ')[1]; 
+    // const token = 
     // console.log(token)
-    const token =req.cookies.accessToken
+    const token =req.cookies.accessToken || req.headers.authorization?.split(' ')[1]; 
     console.log(token)
     
     console.log("Token:", token); // For debugging purposes

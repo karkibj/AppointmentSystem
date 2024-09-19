@@ -3,14 +3,21 @@ import mongoose from "mongoose";
 const AppointmentSchema = new mongoose.Schema({
     doctorId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Doctor"
+        ref: "Doctor",
+        required: true
     },
-    patient: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Patient"
+        ref: "User",
+        required: true
     },
     date: {
-        type: Date
+        type: Date,
+        default: Date.now
+    },
+    day: {
+        type: String,  // You can use a string like "Monday", "Tuesday", or a number (0-6) representing the day of the week.
+        required: true
     },
     time: {
         type: String, 
@@ -18,7 +25,8 @@ const AppointmentSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["booked", "canceled", "completed"],
+        enum: ["booked", "completed"],
+        default: "booked"
     }
 });
 

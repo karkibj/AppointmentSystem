@@ -7,21 +7,28 @@ const Login = () => {
         email: '',
         password: '',
     });
+    const [loading, setLoading] = useState(false); // Loading state to disable button during API calls
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        
         setFormData({
             ...formData,
             [name]: value
         });
-        // console.log(formData)
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+        setLoading(true); // Start loading when form is submitted
+
         try {
+            // Basic form validation
+            if (!formData.email || !formData.password) {
+                alert("Please fill in all the fields.");
+                setLoading(false);
+                return;
+            }
+
             const response = await fetch("http://localhost:8080/api/auth/login", {
                 method: "POST",
                 headers: {
@@ -29,46 +36,44 @@ const Login = () => {
                 },
                 body: JSON.stringify(formData)
             });
-    
+
             const data = await response.json();
-            console.log(data);
-           
-            if (response.ok) {
-                // Extract tokens
-                const { accessToken, refreshToken } = data.data;
-                console.log(accessToken)
-    
-                // Optionally, you can store the tokens in localStorage or cookies
-                localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('refreshToken', refreshToken);
-                
-    
-                //role based access 
-                const userRole = data.data.user.role;
-                localStorage.setItem('userRole',userRole)
-                console.log(userRole)
-                switch(userRole){
-                    case "admin":
-                        navigate('/admin/dashboard', { replace: true });
-                        break;
-                    case "doctor":
-                        alert("Doctor trying to login");
-                        break;
-                    default:
-                        navigate("/", { replace: true });
-                }
-                
-                alert(data.message);
-            } else {
-                alert(data.message);
+            
+            if (!response.ok) {
+                // Handle non-200 responses
+                const errorMsg = data.message || "An error occurred during login.";
+                throw new Error(errorMsg);
             }
-    
-        } catch (err) {
-            console.log("Error occurred: ", err);
-            alert(err.message);
+
+            // Handle successful login
+            const { accessToken, refreshToken, user } = data.data;
+            
+            // Store tokens securely (optional: use httpOnly cookies for sensitive data)
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('userRole', user.role);
+
+            // Role-based redirection
+            switch (user.role) {
+                case "admin":
+                    navigate('/admin/dashboard', { replace: true });
+                    break;
+                case "doctor":
+                    navigate('/doctor/dashboard', { replace: true });
+                    break;
+                default:
+                    navigate("/", { replace: true });
+            }
+
+            alert("Login successful!");
+        } catch (error) {
+            // Handle client-side or network errors
+            console.error("Login error:", error);
+            alert(error.message || "An error occurred during login. Please try again.");
+        } finally {
+            setLoading(false); // Stop loading
         }
     };
-    
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
@@ -111,9 +116,10 @@ const Login = () => {
                     <div className="flex justify-center">
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300"
+                            className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={loading} // Disable the button while loading
                         >
-                            Login
+                            {loading ? 'Logging in...' : 'Login'}
                         </button>
                     </div>
                 </form>

@@ -46,14 +46,7 @@ const createDoctor = asyncHandler(async (req, res) => {
     if (!name || !email || !phone || !password || !specialization) {
         return res.status(400).json(new ApiError(400, "All fields are required"));
     }
-    // const newAvailability={
-    //     day:availability.day,
-    //     appointments:availability.appointments,
-    //     startTime:availability.startTime,
-    //     endTime:availability.endTime
 
-    // }
-    // Check if a user with this email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
         return res.status(400).json(new ApiError(400, "User with this email already exists"));
@@ -98,13 +91,19 @@ if (profilePicture) {
     return res.status(201).json(new ApiResponse(201, newDoctor, "Doctor created successfully"));
 });
 const deleteDoctor = async (req, res) => {
+    console.log("Backend hit ")
     let doctorId = req.params.id;
-    doctorId = doctorId.trim();
+    console.log(doctorId)
+    doctorId = doctorId.trim(); 
+    const doctor= await Doctor.findById(doctorId)
+    console.log(doctor)
     const userId=await Doctor.findById(doctorId).userId;
 
+    console.log(userId)
     try {
         const removeDoctor = await Doctor.findByIdAndDelete(doctorId);
         const removeUSer= await User.findByIdAndDelete(userId)
+        
         
         if (removeDoctor && removeUSer) {
             // Send a success response with the ID of the removed doctor
