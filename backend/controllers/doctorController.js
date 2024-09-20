@@ -97,7 +97,7 @@ const deleteDoctor = async (req, res) => {
     doctorId = doctorId.trim(); 
     const doctor= await Doctor.findById(doctorId)
     console.log(doctor)
-    const userId=await Doctor.findById(doctorId).userId;
+    const userId=doctor.userId
 
     console.log(userId)
     try {

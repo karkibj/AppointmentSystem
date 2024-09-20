@@ -26,7 +26,6 @@ const updateDoctor = async (doctorId, day, timeslot) => {
     if (!availability) {
         throw new Error(`No availability found for day: ${day}`);
     }
-
     // Find the specific timeslot and update its status
     const slotIndex = availability.timeslot.findIndex(slot => slot.time === timeslot);
     if (slotIndex === -1) {
@@ -81,25 +80,20 @@ const getAllAppointments=async(req,res)=>{
     })
     const appointmentData=[]
    allAppointments.map((appointment)=>{
-      
-      
        const data=new Object();
        data._id=appointment._id;
-        data.doctor=appointment.doctorId.userId.name;
-        data.patient=appointment.userId.name;
-        data.bookedDate=appointment.date
+        data.doctor=appointment?.doctorId.userId.name;
+        data.patient=appointment?.userId.name;
+        data.bookedDate=appointment?.date
         data.shedule={
             day:appointment.day,
-            time:appointment.time
+            time:appointment?.time
         }
-        data.status=appointment.status
-
+        data.status=appointment?.status
         appointmentData.push(data);
-
     
    })   
-//    console.log(appointmentData)
-         
+
     return res.status(200).json(new ApiResponse(200,appointmentData,"Doctor fetched sucessfully") )
 
     }

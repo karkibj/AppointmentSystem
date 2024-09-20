@@ -77,6 +77,8 @@ const ManageDoctors = () => {
   };
 
   const handleDeleteDoctor = async (id) => {
+    console.log("handleDelete called")
+    console.log(id)
     const token = localStorage.getItem('accessToken');
     try {
       const response = await fetch(`http://localhost:8080/api/doctor/deleteDoctor/${id}`, {
@@ -84,7 +86,9 @@ const ManageDoctors = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
+        alert("docotor Deleted Successfully")
         setDoctors((prev) => prev.filter((doctor) => doctor._id !== id));
+        
       } else {
         alert('Error deleting doctor');
       }
