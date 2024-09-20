@@ -1,5 +1,8 @@
 import React from 'react';
 import Sidebar from '../Components/Navbar'; // Adjust the path based on your project structure
+import { useEffect,useState } from 'react';
+import RecentAppointment from '../Components/RecentAppointment';
+import axios from "axios"
 
 const Dashboard = () => {
   // Mock data for the dashboard statistics (replace with real data from an API or backend)
@@ -11,6 +14,31 @@ const Dashboard = () => {
     pendingAppointments: 16,
   };
 
+  const [appointments,setAppointments]=useState([])
+
+
+useEffect(()=>{
+  const fetchAppointments=async()=>{
+    try{
+      const response=await axios.get("http://localhost:8080/api/appointment/getAllappointments")
+      console.log(response)
+      console.log(response)
+      if(response.status==200){
+        console.log("OK")
+        setAppointments(response.data.data)
+      }
+      else{
+        alert('Error in fetching appointments')
+      }
+    }
+    catch(err){
+      console.log(err.data,err.message)
+      
+    }
+  };
+  fetchAppointments();
+},[]);
+  
   return (
     <div className="min-h-screen flex">
       <Sidebar />
@@ -45,38 +73,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Recent Activities or Appointments */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-4">Recent Appointments</h2>
-          <div className="bg-white p-6 shadow rounded-lg">
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 bg-gray-200">Doctor</th>
-                  <th className="py-2 px-4 bg-gray-200">Patient</th>
-                  <th className="py-2 px-4 bg-gray-200">Date</th>
-                  <th className="py-2 px-4 bg-gray-200">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Mock data for recent appointments */}
-                <tr>
-                  <td className="py-2 px-4 border-b">Dr. Lionel Messi</td>
-                  <td className="py-2 px-4 border-b">John Doe</td>
-                  <td className="py-2 px-4 border-b">2024-09-12</td>
-                  <td className="py-2 px-4 border-b text-green-500">Completed</td>
-                </tr>
-                <tr>
-                  <td className="py-2 px-4 border-b">Dr. Cristiano Ronaldo</td>
-                  <td className="py-2 px-4 border-b">Jane Smith</td>
-                  <td className="py-2 px-4 border-b">2024-09-11</td>
-                  <td className="py-2 px-4 border-b text-red-500">Pending</td>
-                </tr>
-                {/* Add more appointment entries here */}
-              </tbody>
-            </table>
-          </div>
-        </div>
+       <RecentAppointment appointments={appointments}/>
       </div>
     </div>
   );

@@ -43,6 +43,7 @@ const addAvailability = async (req, res) => {
 
         // Create availability entry
         const availabilityStore = {
+            
             day: day,
             startTime: startTime,
             endTime: endTime,
