@@ -24,7 +24,7 @@ const RecentAppointment = ({appointments}) => {
                 <td className="py-2 px-4 border-b">{appointment?.patient}</td>
                 <td className="py-2 px-4 border-b">{appointment?.shedule.day}-{appointment?.shedule.time}</td>
                 <td className="py-2 px-4 border-b text-green-500">{appointment?.bookedDate}</td>
-                <td className="py-2 px-4 border-b">appointment.status</td>
+                <td className="py-2 px-4 border-b">{appointment.status}</td>
                 
                 </tr>
               ))}

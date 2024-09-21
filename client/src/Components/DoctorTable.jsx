@@ -32,7 +32,7 @@ const DoctorTable = ({ doctors, onDelete, onShowAvailabilityForm }) => {
                 className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded"
                 onClick={() => onShowAvailabilityForm(doctor._id)}
               >
-                Add Availability
+                Manage Availability
               </button>
               <button
                 className="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded"

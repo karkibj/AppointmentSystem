@@ -24,6 +24,7 @@ const timeSlotGenerator = (startTime, endTime, interval = 30) => {
 const addAvailability = async (req, res) => {
     try {
         const { day, startTime, endTime } = req.body;
+        
         const { doctorId } = req.params;
         console.log(doctorId)
         console.log(req.body)
@@ -43,7 +44,6 @@ const addAvailability = async (req, res) => {
 
         // Create availability entry
         const availabilityStore = {
-            
             day: day,
             startTime: startTime,
             endTime: endTime,
@@ -62,4 +62,54 @@ const addAvailability = async (req, res) => {
     }
 };
 
-export { addAvailability };
+
+const viewAvailability=async(req,res)=>{
+    const {doctorId}=req.params
+    const availability=await Doctor.findById(doctorId).select('availability');
+    return res.json(new ApiResponse(200,availability,"Availability fetched successfully"))
+    console.log(availability)
+}
+
+
+const updateAvailability=async(req,res)=>{
+    try {
+        const { day, startTime, endTime } = req.body;
+        const { doctorId } = req.params;
+        console.log(doctorId)
+        console.log(req.body)
+        if (!day || !startTime || !endTime) {
+            return res.json(new ApiError(400, "Fill all the fields"));
+        }
+
+        // Get doctor
+        const doctor = await Doctor.findById(doctorId);
+        console.log(doctor)
+        if (!doctor) {
+            return res.json(new ApiError(404, "Doctor not found"));
+        }
+
+        // Generate time slots
+        const slots = timeSlotGenerator(startTime, endTime);
+
+        // Create availability entry
+        const availabilityStore = {
+            day: day,
+            startTime: startTime,
+            endTime: endTime,
+            timeslot: slots   
+        };
+
+        doctor.availability=doctor.availability.filter(avail=>avail.day.toLocaleLowerCase()!==day.toLocaleLowerCase())
+        doctor.availability.push(availabilityStore);
+
+        await doctor.save();
+
+        return res.json(new ApiResponse(201,doctor ,"Doctor's availability updated successfully"));
+    } catch (err) {
+        console.log(err)
+        return res.json(new ApiError(500, "Internal server error", [err.message]));
+    }
+}
+
+export { addAvailability,viewAvailability,updateAvailability};
+ 

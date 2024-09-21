@@ -3,12 +3,13 @@ import Sidebar from '../Components/Navbar';
 import DoctorTable from '../Components/DoctorTable';
 import DoctorForm from '../Components/DoctorForm';
 import AvailabilityForm from '../Components/AvailabilityForm';
-import Modal from '../Components/Modal';  // Import the modal component
+import Modal from '../Components/Modal';
 
 const ManageDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [showAvailabilityModal, setShowAvailabilityModal] = useState(false); // Modal visibility state
+  const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null); // Store selected doctor
   const [newDoctor, setNewDoctor] = useState({
     name: '',
     email: '',
@@ -77,8 +78,6 @@ const ManageDoctors = () => {
   };
 
   const handleDeleteDoctor = async (id) => {
-    console.log("handleDelete called")
-    console.log(id)
     const token = localStorage.getItem('accessToken');
     try {
       const response = await fetch(`http://localhost:8080/api/doctor/deleteDoctor/${id}`, {
@@ -86,9 +85,7 @@ const ManageDoctors = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
-        alert("docotor Deleted Successfully")
         setDoctors((prev) => prev.filter((doctor) => doctor._id !== id));
-        
       } else {
         alert('Error deleting doctor');
       }
@@ -102,22 +99,34 @@ const ManageDoctors = () => {
     setAvailability((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddAvailability = async (doctorId) => {
+  const handleAddAvailability = async () => {
     const token = localStorage.getItem('accessToken');
+    if (!selectedDoctor) return;
+    
     try {
-      const response = await fetch(`http://localhost:8080/api/doctor/add-availability/${doctorId}`, {
+      const response = await fetch(`http://localhost:8080/api/doctor/add-availability/${selectedDoctor._id}`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(availability),
       });
       if (response.ok) {
-        setShowAvailabilityModal(false); // Close the modal after adding availability
+        setShowAvailabilityModal(false);
+        // Optionally refetch or update the doctor’s availability locally
       } else {
         alert('Error adding availability');
       }
     } catch (err) {
       alert('Error adding availability');
     }
+  };
+
+  const onShowAvailabilityForm = (doctorId) => {
+    const selected = doctors.find((doctor) => doctor._id === doctorId);
+    setSelectedDoctor(selected); // Save the selected doctor
+    setShowAvailabilityModal(true); // Open the modal
   };
 
   return (
@@ -139,21 +148,19 @@ const ManageDoctors = () => {
             onSubmit={handleAddDoctor}
           />
         )}
-        
-        <br /> <br />
 
         <DoctorTable
           doctors={doctors}
           onDelete={handleDeleteDoctor}
-          onShowAvailabilityForm={() => setShowAvailabilityModal(true)} // Show modal on click
+          onShowAvailabilityForm={onShowAvailabilityForm}
         />
-       
-        {/* Availability Modal */}
+
         <Modal isOpen={showAvailabilityModal} onClose={() => setShowAvailabilityModal(false)}>
           <AvailabilityForm
             availability={availability}
             onChange={handleAvailabilityChange}
-            onSubmit={() => handleAddAvailability('doctorId')} // Use real doctor ID
+            onSubmit={handleAddAvailability}
+            existingSchedule={selectedDoctor ? selectedDoctor.availability : []}
           />
         </Modal>
       </div>
