@@ -52,7 +52,6 @@ const createDoctor = asyncHandler(async (req, res) => {
         return res.status(400).json(new ApiError(400, "User with this email already exists"));
     }
 
-    // Upload profile picture to Cloudinary if available
     let uploadedImage = null;
 if (profilePicture) {
     uploadedImage = await uploadOnCloudinary(profilePicture);

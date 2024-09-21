@@ -2,8 +2,8 @@ import React from 'react';
 
 const AvailabilityForm = ({ availability, onChange, onSubmit, onDelete, existingSchedule = [] }) => {
   return (
-    <form className="mt-6 bg-white p-6 shadow-md rounded">
-      <h2 className="text-xl font-semibold mb-4">Manage Availability</h2>
+    <form className="mt-6 bg-white p-6 shadow-lg rounded">
+      <h2 className="text-xl font-semibold mb-4 text-indigo-600">Manage Availability</h2>
 
       {/* Dropdown for Day Selection */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -11,17 +11,13 @@ const AvailabilityForm = ({ availability, onChange, onSubmit, onDelete, existing
           name="day"
           value={availability.day}
           onChange={onChange}
-          className="p-2 border rounded w-full"
+          className="p-3 border rounded w-full focus:outline-none focus:ring focus:ring-indigo-300"
           required
         >
           <option value="">Select Day</option>
-          <option value="Monday">Monday</option>
-          <option value="Tuesday">Tuesday</option>
-          <option value="Wednesday">Wednesday</option>
-          <option value="Thursday">Thursday</option>
-          <option value="Friday">Friday</option>
-          <option value="Saturday">Saturday</option>
-          <option value="Sunday">Sunday</option>
+          {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
+            <option key={day} value={day}>{day}</option>
+          ))}
         </select>
 
         <input
@@ -29,7 +25,7 @@ const AvailabilityForm = ({ availability, onChange, onSubmit, onDelete, existing
           name="startTime"
           value={availability.startTime}
           onChange={onChange}
-          className="p-2 border rounded w-full"
+          className="p-3 border rounded w-full focus:outline-none focus:ring focus:ring-indigo-300"
           required
         />
         <input
@@ -37,24 +33,23 @@ const AvailabilityForm = ({ availability, onChange, onSubmit, onDelete, existing
           name="endTime"
           value={availability.endTime}
           onChange={onChange}
-          className="p-2 border rounded w-full"
+          className="p-3 border rounded w-full focus:outline-none focus:ring focus:ring-indigo-300"
           required
         />
       </div>
 
       <button
         type="button"
-        className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+        className="mt-4 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition duration-300"
         onClick={onSubmit}
       >
         {availability.id ? 'Update Availability' : 'Add Availability'}
       </button>
 
-      {/* Button to delete availability if it exists */}
       {availability.id && (
         <button
           type="button"
-          className="mt-4 ml-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+          className="mt-4 ml-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition duration-300"
           onClick={onDelete}
         >
           Delete Availability
@@ -67,7 +62,7 @@ const AvailabilityForm = ({ availability, onChange, onSubmit, onDelete, existing
           <h3 className="font-semibold">Existing Schedule</h3>
           <ul>
             {existingSchedule.map((slot, index) => (
-              <li key={index}>
+              <li key={index} className="text-gray-700">
                 {slot.day}: {slot.startTime} - {slot.endTime}
               </li>
             ))}

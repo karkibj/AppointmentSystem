@@ -9,7 +9,7 @@ const ManageDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState(null); // Store selected doctor
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [newDoctor, setNewDoctor] = useState({
     name: '',
     email: '',
@@ -69,6 +69,7 @@ const ManageDoctors = () => {
       if (response.ok) {
         setDoctors((prev) => [...prev, data.data]);
         setShowAddForm(false);
+        setNewDoctor({ name: '', email: '', phone: '', password: '', specialization: '', profilePicture: null });
       } else {
         alert(`Error adding doctor: ${data.message}`);
       }
@@ -102,7 +103,7 @@ const ManageDoctors = () => {
   const handleAddAvailability = async () => {
     const token = localStorage.getItem('accessToken');
     if (!selectedDoctor) return;
-    
+
     try {
       const response = await fetch(`http://localhost:8080/api/doctor/add-availability/${selectedDoctor._id}`, {
         method: 'POST',
@@ -114,7 +115,6 @@ const ManageDoctors = () => {
       });
       if (response.ok) {
         setShowAvailabilityModal(false);
-        // Optionally refetch or update the doctor’s availability locally
       } else {
         alert('Error adding availability');
       }
@@ -125,20 +125,20 @@ const ManageDoctors = () => {
 
   const onShowAvailabilityForm = (doctorId) => {
     const selected = doctors.find((doctor) => doctor._id === doctorId);
-    setSelectedDoctor(selected); // Save the selected doctor
-    setShowAvailabilityModal(true); // Open the modal
+    setSelectedDoctor(selected);
+    setShowAvailabilityModal(true);
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex bg-gray-100">
       <Sidebar />
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-semibold mb-6">Manage Doctors</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">Manage Doctors</h1>
         <button
-          className="mt-6 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+          className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded shadow-lg transition duration-300"
           onClick={() => setShowAddForm(!showAddForm)}
         >
-          {showAddForm ? 'Close Form' : 'Add Doctor'}
+          {showAddForm ? 'Close Form' : 'Add New Doctor'}
         </button>
 
         {showAddForm && (
@@ -149,11 +149,13 @@ const ManageDoctors = () => {
           />
         )}
 
-        <DoctorTable
-          doctors={doctors}
-          onDelete={handleDeleteDoctor}
-          onShowAvailabilityForm={onShowAvailabilityForm}
-        />
+        <div className="mt-8 overflow-x-auto shadow-md rounded-lg bg-white">
+          <DoctorTable
+            doctors={doctors}
+            onDelete={handleDeleteDoctor}
+            onShowAvailabilityForm={onShowAvailabilityForm}
+          />
+        </div>
 
         <Modal isOpen={showAvailabilityModal} onClose={() => setShowAvailabilityModal(false)}>
           <AvailabilityForm
