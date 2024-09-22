@@ -13,16 +13,22 @@ const Dashboard = () => {
     totalAppointments: 500,
   });
 
+  const [appointments ,setAppointments]=useState([] )
+
   useEffect(() => {
    
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:8080/api/appointment/getAllappointments');
-        setStats(response.data);
+        const data=response.data
+        console.log(data)
+        setAppointments(data.data);
+        // console.log("appoinement",appointments)
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       }
     };
+
 
     fetchData();
   }, []);
@@ -78,7 +84,7 @@ const Dashboard = () => {
         {/* Recent Appointments Section */}
         <div className="bg-white shadow-md rounded-lg p-6">
         
-          <RecentAppointment />
+          <RecentAppointment appointments={appointments} />
         </div>
       </div>
     </div>

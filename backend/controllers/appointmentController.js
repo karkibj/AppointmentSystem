@@ -66,8 +66,9 @@ const bookAppointment=async(req,res)=>{
 
 
 const getAllAppointments=async(req,res)=>{
+    // console.log("backend hit")
     try{
-
+        
     const allAppointments=await AppointmentModel.find({})
     .populate('userId')
     .populate({
@@ -78,6 +79,7 @@ const getAllAppointments=async(req,res)=>{
         }
 
     })
+    // console.log(allAppointments)
     const appointmentData=[]
    allAppointments.map((appointment)=>{
        const data=new Object();
@@ -91,14 +93,20 @@ const getAllAppointments=async(req,res)=>{
         }
         data.status=appointment?.status
         appointmentData.push(data);
+        // console.log(appointment)
     
    })   
 
-    return res.status(200).json(new ApiResponse(200,appointmentData,"Doctor fetched sucessfully") )
+    return res.status(200).json(new ApiResponse(200,appointmentData,"Appointments fetched sucessfully") )
 
     }
     catch(err){
         res.json(new ApiError(500,"Internal Server Error",[err.message]))
     }
 }
+
+// const viewAppointmentByDoctorId=async(req,res)=>{
+//     const {doctorId}=req.params
+//     const doctor=await
+// }
 export {bookAppointment,getAllAppointments}

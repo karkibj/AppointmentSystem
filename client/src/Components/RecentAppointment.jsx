@@ -1,6 +1,7 @@
 import React from 'react'
 
 const RecentAppointment = ({appointments}) => {
+  console.log(appointments)
     
      return (
         <div className="mt-8">
