@@ -27,7 +27,7 @@ import { model } from "mongoose";
   };
   
 const getAllAppointments=async(req,res)=>{
-    // console.log("backend hit")
+    console.log("backend hit")
     try{
         
     const allAppointments=await AppointmentModel.find({})
@@ -40,6 +40,7 @@ const getAllAppointments=async(req,res)=>{
         }
 
     })
+    console.log(allAppointments)
     // console.log(allAppointments)
     const appointmentData=[]
    allAppointments.map((appointment)=>{
@@ -54,7 +55,7 @@ const getAllAppointments=async(req,res)=>{
         }
         data.status=appointment?.status
         appointmentData.push(data);
-        // console.log(appointment)
+        console.log(appointmentData)
     
    })   
 

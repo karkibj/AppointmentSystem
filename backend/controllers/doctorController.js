@@ -14,7 +14,7 @@ const getAllDoctors=async (req,res)=>{
         return res.json(new ApiResponse(404,null,"Data not found!!"))
     }
     return res.json(new ApiResponse(200,allDoctors,"Doctor data fetched successfully"))
-    console.log(typeof(allDoctors))
+    // console.log(typeof(allDoctors))
 }
 
 const getDoctorById=async (req,res)=>{
@@ -33,14 +33,14 @@ const getDoctorById=async (req,res)=>{
 }
 
 const createDoctor = asyncHandler(async (req, res) => {
-    console.log(req.user)
-    console.log("backend hit")
+    // console.log(req.user)
+    // console.log("backend hit")
     const { name, email, phone, password, specialization } = req.body;
-    console.log(req.file)
+    // console.log(req.file)
     const role = 'doctor';
     const profilePicture = req.file ? req.file.path : null; // Assuming you're using `multer` for file uploads
 
-    console.log(req.body);
+    // console.log(req.body);
 
     // Validate input
     if (!name || !email || !phone || !password || !specialization) {
@@ -90,9 +90,9 @@ if (profilePicture) {
     return res.status(201).json(new ApiResponse(201, newDoctor, "Doctor created successfully"));
 });
 const deleteDoctor = async (req, res) => {
-    console.log("Backend hit ")
+    // console.log("Backend hit ")
     let doctorId = req.params.id;
-    console.log(doctorId)
+    // console.log(doctorId)
     doctorId = doctorId.trim(); 
     const doctor= await Doctor.findById(doctorId)
     console.log(doctor)

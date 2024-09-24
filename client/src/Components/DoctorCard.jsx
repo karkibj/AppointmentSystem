@@ -29,7 +29,7 @@ const DoctorCard = ({ doctor, userId }) => {
 
     setIsBooking(true);
     try {
-      const response = await fetch(`http://localhost:8080/api/appointment/${doctor._id}/${userId}`, {
+      const response = await fetch(`http://localhost:8080/api/appointment/${doctor._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
