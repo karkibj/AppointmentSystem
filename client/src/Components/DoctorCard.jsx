@@ -1,25 +1,61 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import for navigation
 
-const DoctorCard = ({ doctor }) => {
+const DoctorCard = ({ doctor, userId }) => {
   const [selectedDay, setSelectedDay] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
-
+  const [isBooking, setIsBooking] = useState(false);
+  const [bookingMessage, setBookingMessage] = useState('');
+  const navigate = useNavigate(); 
+  // Handle day selection
   const handleDaySelect = (day) => {
     setSelectedDay(day);
     setSelectedSlot('');
+    setBookingMessage('');
   };
 
+  // Handle time slot selection
   const handleSlotSelect = (slot) => {
     setSelectedSlot(slot);
+    setBookingMessage('');
   };
 
-  const handleBooking = () => {
+  // Handle booking request
+  const handleBooking = async () => {
     if (!selectedSlot) {
       alert("Please select a time slot.");
       return;
     }
-    console.log(`Booking appointment for ${doctor.userId.name} at ${selectedSlot}`);
-    // Booking logic (API call)
+
+    setIsBooking(true);
+    try {
+      const response = await fetch(`http://localhost:8080/api/appointment/${doctor._id}/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}` // Include the JWT token
+        },
+        body: JSON.stringify({
+          day: selectedDay,
+          timeslot: selectedSlot,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.status === 401) {
+        // If unauthorized, navigate to login page
+        navigate('/login');  // Redirects to login page
+      } else if (response.ok) {
+        setBookingMessage("Appointment booked successfully!");
+      } else {
+        setBookingMessage(`Error: ${data.message || 'Failed to book appointment'}`);
+      }
+    } catch (error) {
+      setBookingMessage(`Error: ${error.message}`);
+    } finally {
+      setIsBooking(false);
+    }
   };
 
   return (
@@ -27,7 +63,7 @@ const DoctorCard = ({ doctor }) => {
       {/* Doctor's Profile Section */}
       <div className="flex items-center mb-6">
         <img
-          src={doctor.userId.profilePicture}
+          src={doctor.userId.profilePicture} 
           alt={`${doctor.userId.name}'s profile`}
           className="w-24 h-24 object-cover rounded-full shadow-md transform hover:scale-105 transition-transform duration-300"
         />
@@ -90,12 +126,22 @@ const DoctorCard = ({ doctor }) => {
       {selectedSlot && (
         <div className="text-right mt-4">
           <button
-            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-full shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-300"
+            className={`px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-full shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 ${
+              isBooking ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             onClick={handleBooking}
+            disabled={isBooking}
           >
-            Book Appointment
+            {isBooking ? 'Booking...' : 'Book Appointment'}
           </button>
         </div>
+      )}
+
+      {/* Booking Message */}
+      {bookingMessage && (
+        <p className={`mt-4 text-center ${bookingMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
+          {bookingMessage}
+        </p>
       )}
 
       {/* Animated Badge */}

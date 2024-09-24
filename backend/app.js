@@ -13,11 +13,10 @@ app.use(cors({
 
 
 import errorHandler from './middlewares/errorHandler.js';
-
 import authRoutes from './routes/Auth.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js' 
 import doctorRoutes from './routes/Doctor.routes.js';
-
+import userRoutes from './routes/user.route.js'
 dotenv.config({
     path: "./.env"
 });
@@ -33,8 +32,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', authRoutes);
 app.use('/api/doctor',doctorRoutes);
 app.use('/api/appointment',appointmentRoutes)
+app.use('/api/user',userRoutes)
 app.use(errorHandler);
-// app.use('/api/doctor')
+
 
 
 connectMongo();
