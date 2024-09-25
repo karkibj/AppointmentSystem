@@ -1,70 +1,73 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaUserCircle, FaCaretDown } from 'react-icons/fa';
+import { FaUserCircle, FaCaretDown, FaBars } from 'react-icons/fa';
 
 const Header = () => {
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      });
+      const data = await response.json();
+      alert(data.message);
+      if (response.ok) {
+        // Only remove tokens if the logout was successful
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        // Optionally redirect or update your app state here
+      }
+    } catch (err) {
+      alert('Internal Server error');
+    }
+  };
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Toggle Dropdown
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  // Toggle Mobile Menu
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   return (
-    <header className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white shadow-lg py-4 fixed w-full z-50">
+    <header className="bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-500 text-white shadow-lg py-4 fixed w-full z-50">
       <div className="container mx-auto flex justify-between items-center px-6">
         {/* Logo/Title */}
         <div className="text-3xl font-extrabold tracking-wider">
-          <NavLink to="/" className="hover:text-gray-200 transition duration-300">
-            Doctor<span className="text-yellow-300">Appointment</span>
+          <NavLink to="/" className="hover:text-gray-300 transition duration-300">
+            Doctor<span className="text-yellow-400">Appointment</span>
           </NavLink>
         </div>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex space-x-8 text-lg font-semibold">
-          <NavLink
-            to="/"
-            exact
-            className="hover:text-yellow-300 transition duration-300 transform hover:scale-110"
-            activeClassName="text-gray-200"
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/find-doctors"
-            className="hover:text-yellow-300 transition duration-300 transform hover:scale-110"
-            activeClassName="text-gray-200"
-          >
-            Find Doctors
-          </NavLink>
-          <NavLink
-            to="/appointments"
-            className="hover:text-yellow-300 transition duration-300 transform hover:scale-110"
-            activeClassName="text-gray-200"
-          >
-            My Appointments
-          </NavLink>
-          <NavLink
-            to="/about"
-            className="hover:text-yellow-300 transition duration-300 transform hover:scale-110"
-            activeClassName="text-gray-200"
-          >
-            About
-          </NavLink>
-          <NavLink
-            to="/contact"
-            className="hover:text-yellow-300 transition duration-300 transform hover:scale-110"
-            activeClassName="text-gray-200"
-          >
-            Contact Us
-          </NavLink>
+        <nav className="hidden md:flex space-x-6 text-lg font-semibold">
+          {['/', '/find-doctors', '/appointments', '/about', '/contact'].map((path, index) => (
+            <NavLink
+              key={index}
+              to={path}
+              exact
+              className="hover:text-yellow-400 transition duration-300 transform hover:scale-110"
+              activeClassName="text-yellow-400"
+            >
+              {path === '/' ? 'Home' : path.slice(1).replace('-', ' ')}
+            </NavLink>
+          ))}
         </nav>
 
         {/* Call to Action Button */}
         <div className="hidden md:block">
           <NavLink
             to="/book-appointment"
-            className="px-4 py-2 bg-yellow-400 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-500 transition duration-300 transform hover:scale-105"
+            className="px-5 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-full shadow-md hover:bg-yellow-500 transition duration-300 transform hover:scale-105"
           >
             Book Appointment
           </NavLink>
@@ -82,7 +85,7 @@ const Header = () => {
 
           {/* Dropdown Menu */}
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 text-gray-700 transition-opacity duration-300 ease-in-out">
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-700 transition-opacity duration-300 ease-in-out">
               <NavLink
                 to="/profile"
                 className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
@@ -90,23 +93,52 @@ const Header = () => {
               >
                 View Profile
               </NavLink>
-              <NavLink
-                to="/logout"
+              <button
                 className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
-                onClick={() => setDropdownOpen(false)} // Close dropdown when clicked
+                onClick={() => {
+                  setDropdownOpen(false);
+                  handleLogout(); // Properly calling handleLogout
+                }}
               >
                 Logout
-              </NavLink>
+              </button>
             </div>
           )}
         </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <FaBars
+            className="text-2xl cursor-pointer"
+            onClick={toggleMobileMenu}
+          />
+        </div>
       </div>
 
-      {/* Mobile Navigation - Collapsed */}
-      <nav className="md:hidden flex justify-between items-center py-3 px-6 bg-blue-500">
-        <div className="text-lg font-bold">Menu</div>
-        <button className="px-4 py-2 bg-yellow-400 rounded-md">Book Appointment</button>
-      </nav>
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <nav className="md:hidden bg-teal-600 px-6 py-4 space-y-2">
+          {['/', '/find-doctors', '/appointments', '/about', '/contact'].map((path, index) => (
+            <NavLink
+              key={index}
+              to={path}
+              exact
+              className="block text-lg font-semibold text-white hover:bg-teal-700 rounded px-3 py-2 transition duration-300"
+              activeClassName="bg-yellow-500"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {path === '/' ? 'Home' : path.slice(1).replace('-', ' ')}
+            </NavLink>
+          ))}
+          <NavLink
+            to="/book-appointment"
+            className="block text-lg font-semibold text-gray-900 bg-yellow-400 rounded-full px-5 py-2 hover:bg-yellow-500 transition transform hover:scale-105"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Book Appointment
+          </NavLink>
+        </nav>
+      )}
     </header>
   );
 };

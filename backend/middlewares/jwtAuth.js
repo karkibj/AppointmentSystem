@@ -10,7 +10,7 @@ const verifyUser = async (req, res, next) => {
     const token =req.cookies.accessToken || req.headers.authorization?.split(' ')[1]; 
     // console.log(token)
     
-    console.log("Token:", token); // For debugging purposes
+    // console.log("Token:", token); // For debugging purposes
 
     // If no token, deny access
     if (!token) {

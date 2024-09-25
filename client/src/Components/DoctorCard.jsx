@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import for navigation
+import { useNavigate } from 'react-router-dom';
+import { FaCheckCircle } from 'react-icons/fa';
 
-const DoctorCard = ({ doctor, userId }) => {
+const DoctorCard = ({ doctor }) => {
   const [selectedDay, setSelectedDay] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
   const [isBooking, setIsBooking] = useState(false);
   const [bookingMessage, setBookingMessage] = useState('');
-  const navigate = useNavigate(); 
-  // Handle day selection
+  const navigate = useNavigate();
+
   const handleDaySelect = (day) => {
     setSelectedDay(day);
     setSelectedSlot('');
     setBookingMessage('');
   };
 
-  // Handle time slot selection
   const handleSlotSelect = (slot) => {
     setSelectedSlot(slot);
     setBookingMessage('');
   };
 
-  // Handle booking request
   const handleBooking = async () => {
     if (!selectedSlot) {
-      alert("Please select a time slot.");
+      alert('Please select a time slot.');
       return;
     }
 
@@ -33,7 +32,7 @@ const DoctorCard = ({ doctor, userId }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}` // Include the JWT token
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         },
         body: JSON.stringify({
           day: selectedDay,
@@ -42,12 +41,11 @@ const DoctorCard = ({ doctor, userId }) => {
       });
 
       const data = await response.json();
-      
+
       if (response.status === 401) {
-        // If unauthorized, navigate to login page
-        navigate('/login');  // Redirects to login page
+        navigate('/login');
       } else if (response.ok) {
-        setBookingMessage("Appointment booked successfully!");
+        setBookingMessage('Appointment booked successfully!');
       } else {
         setBookingMessage(`Error: ${data.message || 'Failed to book appointment'}`);
       }
@@ -59,33 +57,39 @@ const DoctorCard = ({ doctor, userId }) => {
   };
 
   return (
-    <div className="max-w-sm bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden p-5 mb-6 relative">
+    <div className="max-w-sm bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden relative p-6 mb-8">
       {/* Doctor's Profile Section */}
-      <div className="flex items-center mb-6">
+      <div className="flex items-center space-x-4 mb-4">
         <img
-          src={doctor.userId.profilePicture} 
+          src={doctor.userId.profilePicture}
           alt={`${doctor.userId.name}'s profile`}
-          className="w-24 h-24 object-cover rounded-full shadow-md transform hover:scale-105 transition-transform duration-300"
+          className="w-20 h-20 object-cover rounded-full shadow-md border-2 border-gray-300"
         />
-        <div className="ml-4">
-          <h2 className="text-xl font-bold text-gray-800">{doctor.userId.name}</h2>
-          <p className="text-sm text-indigo-600">{doctor.specialization}</p>
-          <p className="text-sm text-gray-500">{doctor.userId.email}</p>
-          <p className="text-sm text-gray-500">{doctor.userId.phone}</p>
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800">{doctor.userId.name}</h2>
+          <p className="text-sm text-blue-500">{doctor.specialization}</p>
+          <p className="text-sm text-gray-600">{doctor.userId.email}</p>
+          <p className="text-sm text-gray-600">{doctor.userId.phone}</p>
         </div>
+      </div>
+
+      {/* Verified Badge */}
+      <div className="absolute top-2 right-2 flex items-center space-x-1 text-green-600">
+        <FaCheckCircle className="text-xl" />
+        <span className="text-xs font-semibold">Verified</span>
       </div>
 
       {/* Day Selection */}
       <div className="mb-4">
-        <h3 className="text-md font-semibold text-gray-700">Available Days:</h3>
+        <h3 className="text-lg font-semibold text-gray-700">Available Days:</h3>
         <div className="flex flex-wrap mt-2 gap-2">
           {doctor.availability.map((dayInfo) => (
             <button
               key={dayInfo.day}
-              className={`px-3 py-1 rounded-full font-semibold text-sm transition-colors duration-300 ${
+              className={`px-3 py-2 rounded-lg font-medium text-sm transition-colors duration-300 ${
                 selectedDay === dayInfo.day
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  ? 'bg-blue-500 text-white shadow-lg'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
               onClick={() => handleDaySelect(dayInfo.day)}
             >
@@ -98,7 +102,7 @@ const DoctorCard = ({ doctor, userId }) => {
       {/* Time Slot Selection */}
       {selectedDay && (
         <div className="mb-4">
-          <h3 className="text-md font-semibold text-gray-700">Available Time Slots:</h3>
+          <h3 className="text-lg font-semibold text-gray-700">Available Time Slots:</h3>
           <div className="flex flex-wrap gap-2 mt-2">
             {doctor.availability
               .find((dayInfo) => dayInfo.day === selectedDay)
@@ -107,10 +111,10 @@ const DoctorCard = ({ doctor, userId }) => {
                   key={slot._id}
                   className={`px-3 py-2 rounded-lg font-medium text-sm transition-all duration-300 ${
                     selectedSlot === slot.time
-                      ? 'bg-green-500 text-white'
+                      ? 'bg-green-500 text-white shadow-lg'
                       : slot.status === 'available'
                       ? 'bg-gray-200 text-gray-800 hover:bg-green-100'
-                      : 'bg-red-300 text-gray-400 cursor-not-allowed'
+                      : 'bg-red-300 text-gray-500 cursor-not-allowed'
                   }`}
                   onClick={() => slot.status === 'available' && handleSlotSelect(slot.time)}
                   disabled={slot.status !== 'available'}
@@ -124,9 +128,9 @@ const DoctorCard = ({ doctor, userId }) => {
 
       {/* Book Appointment Button */}
       {selectedSlot && (
-        <div className="text-right mt-4">
+        <div className="text-right mt-6">
           <button
-            className={`px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-full shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 ${
+            className={`px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 ${
               isBooking ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             onClick={handleBooking}
@@ -143,11 +147,6 @@ const DoctorCard = ({ doctor, userId }) => {
           {bookingMessage}
         </p>
       )}
-
-      {/* Animated Badge */}
-      <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-1 rounded-bl-xl text-xs font-semibold">
-        Verified
-      </div>
     </div>
   );
 };

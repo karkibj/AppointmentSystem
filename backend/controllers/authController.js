@@ -72,6 +72,12 @@ const options = {
 
 
   const logoutUser = asyncHandler(async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json(new ApiResponse(401, {}, "User not authenticated"));
+    }
+
+    console.log("Logging out user with ID:", req.user._id);
+    
     const logout = await User.findByIdAndUpdate(
         req.user._id,
         { $unset: { refreshToken: 1 } }, // Remove the refreshToken from the user's record
@@ -84,9 +90,10 @@ const options = {
 
     return res
         .status(200)
-        .clearCookie("accessToken")  // Clear access token cookie
-        .clearCookie("refreshToken")  // Clear refresh token cookie
+        .clearCookie("accessToken", { httpOnly: true, secure: true })  // Clear access token cookie
+        .clearCookie("refreshToken", { httpOnly: true, secure: true })  // Clear refresh token cookie
         .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
+
 
 export { loginUser, CreateUser,logoutUser };

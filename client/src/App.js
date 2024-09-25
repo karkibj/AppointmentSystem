@@ -9,6 +9,7 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import PrivateRoute from './Components/protectedRoutes.js';
 import DoctorList from './pages/DoctorList.jsx';
+import UserProfile from './pages/UserProfile.jsx';
 const App = () => {
     return (
         <Router>
@@ -18,6 +19,7 @@ const App = () => {
                 <Route path='find-doctors' element={<DoctorList/>}/>
                 <Route path='/register' element={<Register />} />
                 <Route path='/' element={<HomePage />} />
+                <Route path ='/profile' element={<UserProfile/>}/>
 
                 {/* Protected Routes */}
                 <Route path='/view-doctor' 
