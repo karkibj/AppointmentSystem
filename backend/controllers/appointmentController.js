@@ -1,5 +1,4 @@
 // import {Appointment} from "../models/Appointment.model.js";
-import { Doctor } from "../models/Doctor.model.js";
 import AppointmentModel from "../models/Appointment.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -10,7 +9,7 @@ import { model } from "mongoose";
     try {
       const { doctorId } = req.params;
       const { day, timeslot } = req.body;
-      const userId = req.user._id; // Get user ID from the authenticated user
+      const userId = req.user._id; //
   
       const appointment = new AppointmentModel({
         doctorId,
@@ -27,7 +26,7 @@ import { model } from "mongoose";
   };
   
 const getAllAppointments=async(req,res)=>{
-    console.log("backend hit")
+    // console.log("backend hit")
     try{
         
     const allAppointments=await AppointmentModel.find({})
@@ -38,12 +37,11 @@ const getAllAppointments=async(req,res)=>{
             path:'userId',
             model:'User'
         }
-
     })
-    console.log(allAppointments)
-    // console.log(allAppointments)
+   
     const appointmentData=[]
    allAppointments.map((appointment)=>{
+    
        const data=new Object();
        data._id=appointment._id;
         data.doctor=appointment?.doctorId.userId.name;
@@ -55,7 +53,7 @@ const getAllAppointments=async(req,res)=>{
         }
         data.status=appointment?.status
         appointmentData.push(data);
-        console.log(appointmentData)
+        // console.log(appointmentData)
     
    })   
 

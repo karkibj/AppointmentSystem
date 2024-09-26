@@ -14,7 +14,17 @@ const userSchema = new mongoose.Schema({
     type:String,
     default:"https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg"
 
-  }
+  },
+  refreshToken: {
+    type: String,
+
+},
+otp:{
+  type:Number,
+  default:0,
+  expires:'30s'
+
+},
 });
 
 userSchema.methods.isPasswordInHistory = async function(newPassword) {
@@ -47,12 +57,9 @@ userSchema.pre('save',
 });
 
 // Correct pre 'find' hook to exclude sensitive fields
-userSchema.pre('find', function (next) {
-  this.select('-password -lastFivePasswords'); // Exclude fields
-  next();
-});
-userSchema.pre('find', function (next) {
-  this.select('name email phone role'); // Include specific fields only
+userSchema.pre('find', function(next) {
+  this.select('name email phone role'); // Include these fields
+  this.select('-password -lastFivePasswords'); // Exclude sensitive fields
   next();
 });
 
