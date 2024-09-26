@@ -7,8 +7,9 @@ import cookieParser from "cookie-parser";
 import cors from 'cors'
 
 app.use(cors({
-    origin:"http://localhost:3000",
-    methods:['GET','POST','PATCH','DELETE','PUT']
+    origin:"http://localhost:5173",
+    methods:['GET','POST','PATCH','DELETE','PUT'],
+    credentials:true //added by dipesh
 }))
 
 
@@ -22,7 +23,7 @@ dotenv.config({
     path: "./.env"
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5173;
 
 app.use(express.json());
 app.use(cookieParser()); // Correct usage

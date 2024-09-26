@@ -11,8 +11,8 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' }); // Files will temporarily be stored in 'uploads/'
 
 // Routes
-router.post('/createDoctor', jwtVerification('admin'), upload.single('profilePicture'), createDoctor);
-router.get('/', getAllDoctors);
+router.post('/createDoctor', upload.single('profilePicture'), createDoctor);            // jwtVerification('admin'),
+router.get('/getDoctor', getAllDoctors); // added getDoctor by Dipesh for clairification
 router.delete('/deleteDoctor/:id', jwtVerification('admin'), deleteDoctor);
 router.post('/add-availability/:doctorId',jwtVerification('admin'),addAvailability)
 
