@@ -43,6 +43,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // Retrieve user with the password field included
     const user = await User.findOne({ email }).select('+password');
+    
     if (!user) {
         throw new ApiError(400, "User not found");
     }
@@ -63,4 +64,36 @@ const loginUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, {accessToken,refreshToken,user}, "Login successful"));
 });
 
-export { loginUser, CreateUser };
+const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  };
+
+
+  const logoutUser = asyncHandler(async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json(new ApiResponse(401, {}, "User not authenticated"));
+    }
+
+    console.log("Logging out user with ID:", req.user._id);
+    
+    const logout = await User.findByIdAndUpdate(
+        req.user._id,
+        { $unset: { refreshToken: 1 } }, // Remove the refreshToken from the user's record
+        { new: true }
+    );
+
+    if (!logout) {
+        throw new ApiError(500, "Something went wrong while logging out the user");
+    }
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", { httpOnly: true, secure: true })  // Clear access token cookie
+        .clearCookie("refreshToken", { httpOnly: true, secure: true })  // Clear refresh token cookie
+        .json(new ApiResponse(200, {}, "User logged out successfully"));
+});
+
+
+export { loginUser, CreateUser,logoutUser };

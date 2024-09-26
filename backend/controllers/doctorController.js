@@ -15,10 +15,26 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Utility function for image uploads
 
+<<<<<<< HEAD
 // Controller to get a list of all doctors with populated user information
 const getAllDoctors = async (req, res) => {
     // Fetch all doctors from the database and populate user information (userId is a reference)
     const allDoctors = await Doctor.find({}).populate('userId');
+=======
+
+// console.log(mongoose.Types.ObjectId.isValid('66e2adf825b0b9bb71d1e65c'));
+
+const getAllDoctors=async (req,res)=>{
+    const allDoctors=await Doctor.find({}).populate('userId');
+    if(!allDoctors){
+        return res.json(new ApiResponse(404,null,"Data not found!!"))
+    }
+    return res.json(new ApiResponse(200,allDoctors,"Doctor data fetched successfully"))
+    // console.log(typeof(allDoctors))
+}
+
+const getDoctorById=async (req,res)=>{
+>>>>>>> ac26518b198d7811018ae5b47fef8208f233ced2
     
     // If no doctors found, respond with a 404 error
     if (!allDoctors) {
@@ -56,6 +72,7 @@ const getDoctorById = async (req, res) => {
 
 // Controller to create a new doctor and user account
 const createDoctor = asyncHandler(async (req, res) => {
+<<<<<<< HEAD
     // Log current user and request for debugging purposes
     console.log(req.user);
     console.log("backend hit");
@@ -68,6 +85,16 @@ const createDoctor = asyncHandler(async (req, res) => {
 
     const role = 'doctor'; // Setting user role as 'doctor'
     const profilePicture = req.file ? req.file.path : null; // Check if a profile picture was uploaded
+=======
+    // console.log(req.user)
+    // console.log("backend hit")
+    const { name, email, phone, password, specialization } = req.body;
+    // console.log(req.file)
+    const role = 'doctor';
+    const profilePicture = req.file ? req.file.path : null; // Assuming you're using `multer` for file uploads
+
+    // console.log(req.body);
+>>>>>>> ac26518b198d7811018ae5b47fef8208f233ced2
 
     // Validate input: All fields are required
     if (!name || !email || !phone || !password || !specialization) {
@@ -80,7 +107,10 @@ const createDoctor = asyncHandler(async (req, res) => {
         return res.status(400).json(new ApiError(400, "User with this email already exists"));
     }
 
+<<<<<<< HEAD
     // Upload the profile picture to Cloudinary, if available
+=======
+>>>>>>> ac26518b198d7811018ae5b47fef8208f233ced2
     let uploadedImage = null;
     if (profilePicture) {
         uploadedImage = await uploadOnCloudinary(profilePicture);
@@ -119,6 +149,17 @@ const createDoctor = asyncHandler(async (req, res) => {
     // Return a success response with the created doctor data
     return res.status(201).json(new ApiResponse(201, newDoctor, "Doctor created successfully"));
 });
+<<<<<<< HEAD
+=======
+const deleteDoctor = async (req, res) => {
+    // console.log("Backend hit ")
+    let doctorId = req.params.id;
+    // console.log(doctorId)
+    doctorId = doctorId.trim(); 
+    const doctor= await Doctor.findById(doctorId)
+    console.log(doctor)
+    const userId=doctor.userId
+>>>>>>> ac26518b198d7811018ae5b47fef8208f233ced2
 
 // Controller to delete a doctor and the associated user
 const deleteDoctor = async (req, res) => {

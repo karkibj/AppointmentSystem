@@ -8,9 +8,9 @@ const verifyUser = async (req, res, next) => {
     // const token = 
     // console.log(token)
     const token =req.cookies.accessToken || req.headers.authorization?.split(' ')[1]; 
-    console.log(token)
+    // console.log(token)
     
-    console.log("Token:", token); // For debugging purposes
+    // console.log("Token:", token); // For debugging purposes
 
     // If no token, deny access
     if (!token) {
@@ -25,6 +25,7 @@ const verifyUser = async (req, res, next) => {
 
     // Find the user
     const user = await User.findById(decoded._id);
+  
     if (!user) {
       return res.status(404).json(new ApiResponse(404, null, "User not found"));
     }

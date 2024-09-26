@@ -1,81 +1,90 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../Components/Navbar'; // Adjust the path based on your project structure
+import RecentAppointment from '../Components/RecentAppointment';
+import axios from "axios";
+import { FaUserMd, FaUserInjured, FaCalendarAlt, FaHeartbeat } from 'react-icons/fa';
 
 const Dashboard = () => {
-  // Mock data for the dashboard statistics (replace with real data from an API or backend)
-  const stats = {
-    totalDoctors: 12,
-    totalPatients: 80,
-    totalAppointments: 56,
-    completedAppointments: 40,
-    pendingAppointments: 16,
-  };
+  // Mock state for dashboard stats (fetch from backend in production)
+  const [stats, setStats] = useState({
+    totalDoctors: 10,
+    totalPatients: 100,
+    appointmentsToday: 5,
+    totalAppointments: 500,
+  });
+
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken'); // Retrieve the token from local storage
+        const response = await axios.get('http://localhost:8080/api/appointment/getAllappointments', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Set the Authorization header
+          },
+        });
+        console.log(response.data)
+        setAppointments(response.data.data); // Set the appointments from response
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
-    <div className="min-h-screen flex">
+    <div className="flex bg-gray-100 min-h-screen">
+      {/* Sidebar */}
       <Sidebar />
-      <div className="flex-1 p-8">
-        <h1 className="text-3xl font-semibold mb-6">Dashboard</h1>
 
-        {/* Dashboard Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white p-6 shadow rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-700">Total Doctors</h2>
-            <p className="text-4xl font-bold mt-2 text-blue-500">{stats.totalDoctors}</p>
+      {/* Main Content */}
+      <div className="flex-1 p-10">
+        <h1 className="text-4xl font-semibold text-gray-800 mb-8">Dashboard</h1>
+
+        {/* Dashboard Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          {/* Total Doctors */}
+          <div className="bg-white shadow-md rounded-lg p-6 flex items-center space-x-4">
+            <FaUserMd className="text-4xl text-blue-500" />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-700">Total Doctors</h3>
+              <p className="text-2xl font-bold text-gray-900">{stats.totalDoctors}</p>
+            </div>
           </div>
 
-          <div className="bg-white p-6 shadow rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-700">Total Patients</h2>
-            <p className="text-4xl font-bold mt-2 text-green-500">{stats.totalPatients}</p>
+          {/* Total Patients */}
+          <div className="bg-white shadow-md rounded-lg p-6 flex items-center space-x-4">
+            <FaUserInjured className="text-4xl text-green-500" />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-700">Total Patients</h3>
+              <p className="text-2xl font-bold text-gray-900">{stats.totalPatients}</p>
+            </div>
           </div>
 
-          <div className="bg-white p-6 shadow rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-700">Total Appointments</h2>
-            <p className="text-4xl font-bold mt-2 text-purple-500">{stats.totalAppointments}</p>
+          {/* Appointments Today */}
+          <div className="bg-white shadow-md rounded-lg p-6 flex items-center space-x-4">
+            <FaCalendarAlt className="text-4xl text-orange-500" />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-700">Appointments Today</h3>
+              <p className="text-2xl font-bold text-gray-900">{stats.appointmentsToday}</p>
+            </div>
           </div>
 
-          <div className="bg-white p-6 shadow rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-700">Completed Appointments</h2>
-            <p className="text-4xl font-bold mt-2 text-yellow-500">{stats.completedAppointments}</p>
-          </div>
-
-          <div className="bg-white p-6 shadow rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-700">Pending Appointments</h2>
-            <p className="text-4xl font-bold mt-2 text-red-500">{stats.pendingAppointments}</p>
+          {/* Total Appointments */}
+          <div className="bg-white shadow-md rounded-lg p-6 flex items-center space-x-4">
+            <FaHeartbeat className="text-4xl text-red-500" />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-700">Total Appointments</h3>
+              <p className="text-2xl font-bold text-gray-900">{stats.totalAppointments}</p>
+            </div>
           </div>
         </div>
 
-        {/* Recent Activities or Appointments */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-4">Recent Appointments</h2>
-          <div className="bg-white p-6 shadow rounded-lg">
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 bg-gray-200">Doctor</th>
-                  <th className="py-2 px-4 bg-gray-200">Patient</th>
-                  <th className="py-2 px-4 bg-gray-200">Date</th>
-                  <th className="py-2 px-4 bg-gray-200">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Mock data for recent appointments */}
-                <tr>
-                  <td className="py-2 px-4 border-b">Dr. Lionel Messi</td>
-                  <td className="py-2 px-4 border-b">John Doe</td>
-                  <td className="py-2 px-4 border-b">2024-09-12</td>
-                  <td className="py-2 px-4 border-b text-green-500">Completed</td>
-                </tr>
-                <tr>
-                  <td className="py-2 px-4 border-b">Dr. Cristiano Ronaldo</td>
-                  <td className="py-2 px-4 border-b">Jane Smith</td>
-                  <td className="py-2 px-4 border-b">2024-09-11</td>
-                  <td className="py-2 px-4 border-b text-red-500">Pending</td>
-                </tr>
-                {/* Add more appointment entries here */}
-              </tbody>
-            </table>
-          </div>
+        {/* Recent Appointments Section */}
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <RecentAppointment appointments={appointments} />
         </div>
       </div>
     </div>

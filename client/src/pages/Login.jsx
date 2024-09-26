@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../Components/Header';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -76,6 +77,8 @@ const Login = () => {
     };
 
     return (
+        <>
+        <Header/>
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">Doctor Appointment System</h2>
@@ -134,7 +137,9 @@ const Login = () => {
                 </div>
             </div>
         </div>
+        </>
     );
+    
 };
 
 export default Login;
