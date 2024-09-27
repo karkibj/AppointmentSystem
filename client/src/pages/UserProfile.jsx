@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ProfileDetailsCard from '../Components/profile/ProfileDetailsCard';
 import AppointmentList from '../Components/profile/AppointmentList.jsx';
-import Header from '../Components/Header.jsx';
+import Header from '../Components/headerFooter/Header.jsx';
 import { useNavigate } from 'react-router-dom';
-
-const appointments = [
-  { id: 1, title: 'Doctor Appointment', date: '2024-09-30', time: '10:00 AM', location: 'Springfield Hospital' },
-  { id: 2, title: 'Business Meeting', date: '2024-10-01', time: '2:00 PM', location: 'Downtown Office' },
-  { id: 3, title: 'Dentist Visit', date: '2024-10-02', time: '4:00 PM', location: 'Oral Health Clinic' },
-];
 
 // Initial empty profile
 const userProfile = {
@@ -21,10 +15,11 @@ const userProfile = {
 
 function ProfilePage() {
   const [user, setUser] = useState(userProfile);
+  const [appointments, setAppointments] = useState([]); // State to hold appointments
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Fetch the user profile on component mount
+  // Fetch the user profile and appointments on component mount
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -56,7 +51,30 @@ function ProfilePage() {
       }
     };
 
+    const fetchAppointments = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/appointment/my-appointment', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setAppointments(data.data); // Set appointments from the response data
+        } else {
+          alert(data.message || "Failed to fetch appointments.");
+        }
+      } catch (err) {
+        console.log(err.message);
+        setError('Failed to fetch appointments');
+      }
+    };
+
     fetchProfile();
+    fetchAppointments(); // Call to fetch appointments
   }, [navigate]);
 
   const handleSaveProfile = async (name, email, phone, address, profileImage) => {
@@ -71,7 +89,6 @@ function ProfilePage() {
           name,
           email,
           phone,
-          // address,
           profilePicture: profileImage,
         }),
       });

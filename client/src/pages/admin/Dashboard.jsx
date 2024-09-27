@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../Components/Navbar'; // Adjust the path based on your project structure
-import RecentAppointment from '../Components/RecentAppointment';
+import Sidebar from '../../Components/headerFooter/Navbar'; // Adjust the path based on your project structure
+import RecentAppointment from '../../Components/doctors/RecentAppointment';
 import axios from "axios";
 import { FaUserMd, FaUserInjured, FaCalendarAlt, FaHeartbeat } from 'react-icons/fa';
 

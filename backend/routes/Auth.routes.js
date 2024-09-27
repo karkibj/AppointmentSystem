@@ -6,7 +6,6 @@ import {
   logoutUser,
   forgotPassword,
   verifyOTP,
-  resetPassword,
   changePassword
 } from "../controllers/authController.js";
 
@@ -16,7 +15,7 @@ router.post('/login', loginUser);
 router.post('/logout', verifyUser, logoutUser);
 router.post('/forgot-password', forgotPassword);
 router.post('/verify-otp', verifyOTP);
-router.post('/reset-password', resetPassword);
+// router.post('/reset-password', resetPassword);
 router.post('/change-password', verifyUser, changePassword);
 
 export default router;

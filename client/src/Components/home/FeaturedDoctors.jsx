@@ -1,5 +1,5 @@
 import React from 'react';
-import DoctorCard from './DoctorCard';
+import DoctorCard from '../doctors/DoctorCard';
 
 const FeaturedDoctors = ({ doctors }) => {
   return (

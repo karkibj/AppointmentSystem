@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaUserCircle, FaCaretDown, FaBars } from 'react-icons/fa';
 
 const Header = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in by checking for the accessToken
+    const token = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!token); // Set isLoggedIn to true if token exists
+  }, []);
+
   const handleLogout = async () => {
     try {
       const response = await fetch('http://localhost:8080/api/auth/logout', {
@@ -15,31 +25,26 @@ const Header = () => {
       const data = await response.json();
       alert(data.message);
       if (response.ok) {
-        // Only remove tokens if the logout was successful
+        // Remove tokens only if logout was successful
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        // Optionally redirect or update your app state here
+        setIsLoggedIn(false); // Update login state
       }
     } catch (err) {
       alert('Internal Server error');
     }
   };
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Toggle Dropdown
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // Toggle Mobile Menu
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
   return (
-    <header className="bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-500 text-white shadow-lg py-4 fixed w-full z-50">
+    <header className="bg-gradient-to-r from-teal-700 via-cyan-600 to-blue-500 text-white shadow-lg py-4 fixed w-full z-50">
       <div className="container mx-auto flex justify-between items-center px-6">
         {/* Logo/Title */}
         <div className="text-3xl font-extrabold tracking-wider">
@@ -75,34 +80,46 @@ const Header = () => {
 
         {/* User Profile/Actions */}
         <div className="relative">
-          <div
-            className="flex items-center cursor-pointer space-x-2"
-            onClick={toggleDropdown}
-          >
-            <FaUserCircle className="text-3xl" />
-            <FaCaretDown className="text-xl" />
-          </div>
+          {isLoggedIn ? (
+            <>
+              <div
+                className="flex items-center cursor-pointer space-x-2"
+                onClick={toggleDropdown}
+              >
+                <FaUserCircle className="text-3xl" />
+                <FaCaretDown className="text-xl" />
+              </div>
 
-          {/* Dropdown Menu */}
-          {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-700 transition-opacity duration-300 ease-in-out">
-              <NavLink
-                to="/profile"
-                className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
-                onClick={() => setDropdownOpen(false)} // Close dropdown when clicked
-              >
-                View Profile
-              </NavLink>
-              <button
-                className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
-                onClick={() => {
-                  setDropdownOpen(false);
-                  handleLogout(); // Properly calling handleLogout
-                }}
-              >
-                Logout
-              </button>
-            </div>
+              {/* Dropdown Menu for Logged In Users */}
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-700 transition-opacity duration-300 ease-in-out">
+                  <NavLink
+                    to="/profile"
+                    className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
+                    onClick={() => setDropdownOpen(false)} // Close dropdown when clicked
+                  >
+                    View Profile
+                  </NavLink>
+                  <button
+                    className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      handleLogout(); // Properly calling handleLogout
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            // Show Login Button for Guests
+            <NavLink
+              to="/login"
+              className="px-5 py-2 bg-blue-400 text-white-900 font-semibold rounded-full shadow-md hover:bg-yellow-500 transition duration-300 transform hover:scale-105"
+            >
+              Login
+            </NavLink>
           )}
         </div>
 

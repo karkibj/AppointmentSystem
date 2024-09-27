@@ -58,7 +58,7 @@ userSchema.pre('save',
 
 // Correct pre 'find' hook to exclude sensitive fields
 userSchema.pre('find', function(next) {
-  this.select('name email phone role'); // Include these fields
+  this.select('name email phone role profilePicture'); // Include these fields
   this.select('-password -lastFivePasswords'); // Exclude sensitive fields
   next();
 });

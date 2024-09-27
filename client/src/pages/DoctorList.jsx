@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import DoctorCard from '../Components/DoctorCard.jsx';
-import Header from '../Components/Header.jsx';
+import DoctorCard from '../Components/doctors/DoctorCard.jsx';
+import Header from '../Components/headerFooter/Header.jsx';
 
 const DoctorList = () => {
   const [doctors, setDoctors] = useState([]);
@@ -18,6 +18,7 @@ const DoctorList = () => {
           throw new Error('Failed to fetch data');
         }
         const data = await response.json();
+        console.log(data.data)
         setDoctors(data.data); // Update state with fetched data
       } catch (error) {
         setError(error.message); // Set error message

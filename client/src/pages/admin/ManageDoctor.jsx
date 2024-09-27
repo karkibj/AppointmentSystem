@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../Components/Navbar';
-import DoctorTable from '../Components/DoctorTable';
-import DoctorForm from '../Components/DoctorForm';
-import AvailabilityForm from '../Components/AvailabilityForm';
-import Modal from '../Components/Modal';
+import Sidebar from '../../Components/headerFooter/Navbar';
+import DoctorTable from '../../Components/doctors/DoctorTable';
+import DoctorForm from '../../Components/doctors/DoctorForm';
+import AvailabilityForm from '../../Components/doctors/AvailabilityForm';
+import Modal from '../../Components/doctors/Modal';
 
 const ManageDoctors = () => {
   const [doctors, setDoctors] = useState([]);

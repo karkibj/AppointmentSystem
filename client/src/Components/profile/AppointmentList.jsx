@@ -7,8 +7,8 @@ function AppointmentList({ appointments }) {
 
   const filteredAppointments = appointments.filter(
     (appointment) =>
-      appointment.title.toLowerCase().includes(search.toLowerCase()) &&
-      (!filterDate || appointment.date === filterDate)
+      appointment.doctor.toLowerCase().includes(search.toLowerCase()) &&
+      (!filterDate || appointment.day === filterDate) // Update to filter by day
   );
 
   return (
@@ -16,7 +16,7 @@ function AppointmentList({ appointments }) {
       <div className="mb-6">
         <input
           type="text"
-          placeholder="Search by title"
+          placeholder="Search by doctor name"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="border rounded px-3 py-2 mr-4"
@@ -31,7 +31,7 @@ function AppointmentList({ appointments }) {
 
       {filteredAppointments.length > 0 ? (
         filteredAppointments.map((appointment) => (
-          <AppointmentCard key={appointment.id} appointment={appointment} />
+          <AppointmentCard key={appointment._id} appointment={appointment} />
         ))
       ) : (
         <p className="text-gray-600">No appointments found.</p>

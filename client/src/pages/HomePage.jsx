@@ -1,10 +1,10 @@
 import React from 'react';
-import Header from '../Components/Header.jsx';  // Import the Header component
-import HeroSection from '../Components/HeroSection.jsx';
-import HowItWorks from '../Components/HowItWorks.jsx';
-import WhyChooseUs from '../Components/WhyChooseUs.jsx';
-import DoctorCard from '../Components/DoctorCard.jsx'; // Assuming you already have the DoctorCard component
-import Footer from '../Components/Footer.jsx';
+import Header from '../Components/headerFooter/Header.jsx';  // Import the Header component
+import HeroSection from '../Components/home/HeroSection.jsx';
+import HowItWorks from '../Components/home/HowItWorks.jsx';
+import WhyChooseUs from '../Components/home/WhyChooseUs.jsx';
+import DoctorCard from '../Components/doctors/DoctorCard.jsx'; // Assuming you already have the DoctorCard component
+import Footer from '../Components/headerFooter/Footer.jsx';
 
 const doctorsData = [
   // Example doctor data to display on the homepage
