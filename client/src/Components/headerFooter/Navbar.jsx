@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaTachometerAlt, FaUserMd, FaUserInjured, FaCog, FaBars, FaWrench,FaUser } from 'react-icons/fa';
+import { FaTachometerAlt, FaUserMd, FaUserInjured, FaCog, FaBars, FaWrench, FaUser } from 'react-icons/fa';
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -10,10 +10,14 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-300 flex flex-col p-6 shadow-lg ${collapsed ? 'w-20' : 'w-64'} transition-width duration-300`}>
+    <div
+      className={`min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-gray-200 flex flex-col p-4 shadow-xl ${
+        collapsed ? 'w-20' : 'w-64'
+      } transition-all duration-300 ease-in-out`}
+    >
       {/* Toggle Button */}
-      <button 
-        className="text-gray-400 hover:text-white mb-6 self-center" 
+      <button
+        className="text-gray-300 hover:text-white mb-6 self-center"
         onClick={toggleSidebar}
       >
         <FaBars className="text-2xl" />
@@ -21,33 +25,37 @@ const Sidebar = () => {
 
       {/* Title / Logo */}
       {!collapsed && (
-        <h2 className="text-2xl font-semibold mb-8 text-center text-white tracking-wide">
+        <h2 className="text-xl font-semibold mb-10 text-center text-white">
           Admin Panel
         </h2>
       )}
-      <li>
-  <NavLink
-    to="/profile"
-    className="flex items-center space-x-3 py-2 px-4 rounded-lg text-base transition duration-300 hover:bg-gray-700 hover:text-white"
-    activeClassName="bg-gray-700 text-white"
-  >
-    <FaUser className="text-lg" />
-    <span>Profile</span>
-  </NavLink>
-</li>
-
 
       {/* Navigation Links */}
-      <ul className="space-y-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900">
-        {/* Dashboard */}
+      <ul className="space-y-4">
+        <li>
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              `flex items-center space-x-3 py-3 px-4 rounded-lg text-sm font-medium tracking-wide transition-all ${
+                isActive
+                  ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-lg'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white hover:shadow-md'
+              }`
+            }
+          >
+            <FaUser className="text-lg" />
+            {!collapsed && <span>Profile</span>}
+          </NavLink>
+        </li>
+
         <li>
           <NavLink
             to="/admin/dashboard"
             className={({ isActive }) =>
-              `flex items-center space-x-3 py-2 px-4 rounded-lg text-base transition duration-300 ${
+              `flex items-center space-x-3 py-3 px-4 rounded-lg text-sm font-medium tracking-wide transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-gray-700 to-gray-600 text-white border-l-4 border-teal-500'
-                  : 'hover:bg-gray-700 hover:text-white hover:shadow-md'
+                  ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-lg'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white hover:shadow-md'
               }`
             }
           >
@@ -56,15 +64,14 @@ const Sidebar = () => {
           </NavLink>
         </li>
 
-        {/* Manage Doctors */}
         <li>
           <NavLink
             to="/manage-doctors"
             className={({ isActive }) =>
-              `flex items-center space-x-3 py-2 px-4 rounded-lg text-base transition duration-300 ${
+              `flex items-center space-x-3 py-3 px-4 rounded-lg text-sm font-medium tracking-wide transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-gray-700 to-gray-600 text-white border-l-4 border-teal-500'
-                  : 'hover:bg-gray-700 hover:text-white hover:shadow-md'
+                  ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-lg'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white hover:shadow-md'
               }`
             }
           >
@@ -73,15 +80,14 @@ const Sidebar = () => {
           </NavLink>
         </li>
 
-        {/* Manage Patients */}
         <li>
           <NavLink
             to="/manage-patients"
             className={({ isActive }) =>
-              `flex items-center space-x-3 py-2 px-4 rounded-lg text-base transition duration-300 ${
+              `flex items-center space-x-3 py-3 px-4 rounded-lg text-sm font-medium tracking-wide transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-gray-700 to-gray-600 text-white border-l-4 border-teal-500'
-                  : 'hover:bg-gray-700 hover:text-white hover:shadow-md'
+                  ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-lg'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white hover:shadow-md'
               }`
             }
           >
@@ -90,19 +96,18 @@ const Sidebar = () => {
           </NavLink>
         </li>
 
-        {/* Settings */}
         <li>
           <NavLink
             to="/settings"
             className={({ isActive }) =>
-              `flex items-center space-x-3 py-2 px-4 rounded-lg text-base transition duration-300 ${
+              `flex items-center space-x-3 py-3 px-4 rounded-lg text-sm font-medium tracking-wide transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-gray-700 to-gray-600 text-white border-l-4 border-teal-500'
-                  : 'hover:bg-gray-700 hover:text-white hover:shadow-md'
+                  ? 'bg-gradient-to-r from-blue-600 to-teal-500 text-white shadow-lg'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white hover:shadow-md'
               }`
             }
           >
-            <FaWrench className="text-lg" /> {/* Changed to wrench icon */}
+            <FaWrench className="text-lg" />
             {!collapsed && <span>Settings</span>}
           </NavLink>
         </li>
@@ -121,4 +126,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
