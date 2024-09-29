@@ -75,6 +75,7 @@ const ManageDoctors = () => {
       if (response.ok) {
         setDoctors((prev) => [...prev, data.data]);
         setShowAddForm(false);
+        alert(data.message)
         setNewDoctor({ name: '', email: '', phone: '', password: '', specialization: '', profilePicture: null });
       } else {
         setError(data.message || 'Error adding doctor');

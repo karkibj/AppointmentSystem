@@ -79,6 +79,7 @@ const Login = () => {
             setFormData({ email: '', password: '' }); // Clear form on success
         } catch (error) {
             console.error("Login error:", error);
+            alert(error.message)
             setAlert({ message: error.message || "An error occurred during login. Please try again.", type: 'error', visible: true });
         } finally {
             setLoading(false);

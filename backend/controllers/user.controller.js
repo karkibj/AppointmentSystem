@@ -14,7 +14,7 @@ const viewProfile=async(req,res)=>{
 }
 
 const editProfile = async (req, res) => {
-    console.log("backend hti")
+    // console.log("backend hti")
     try {
       const allowed_updates = ['name', 'profilePicture', 'phone', 'email'];
       const updates = Object.keys(req.body);

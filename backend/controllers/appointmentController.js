@@ -2,15 +2,18 @@
 import AppointmentModel from "../models/Appointment.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { model } from "mongoose";
+
 
     
-  const bookAppointment = async (req, res) => {
+ const bookAppointment = async (req, res) => {
     try {
       const { doctorId } = req.params;
       const { day, timeslot } = req.body;
       const userId = req.user._id; //
   
+      if(!doctorId || !day || !timeslot || !userId){
+        throw new ApiError(401,"All fields are required ")
+      }
       const appointment = new AppointmentModel({
         doctorId,
         userId,
@@ -26,7 +29,6 @@ import { model } from "mongoose";
   };
   
 const getAllAppointments=async(req,res)=>{
-    // console.log("backend hit")
     try{
         
     const allAppointments=await AppointmentModel.find({})
@@ -41,9 +43,8 @@ const getAllAppointments=async(req,res)=>{
    
     const appointmentData=[]
    allAppointments.map((appointment)=>{
-    
-       const data=new Object();
-       data._id=appointment._id;
+        const data=new Object();
+        data._id=appointment._id;
         data.doctor=appointment?.doctorId.userId.name;
         data.patient=appointment?.userId.name;
         data.bookedDate=appointment?.date
@@ -53,7 +54,6 @@ const getAllAppointments=async(req,res)=>{
         }
         data.status=appointment?.status
         appointmentData.push(data);
-        // console.log(appointmentData)
     
    })   
 
@@ -76,13 +76,10 @@ const myAppointment = async (req, res) => {
             path:'userId',
             model:'User'
         }
-    })
-      // console.log(appointments)
-      
+    })      
       if (appointments.length === 0) {
           return res.status(404).json(new ApiResponse(404, {}, "No appointments yet"));
       }
-
       const appointmentData = appointments.map((appointment) => {
           return {
               _id: appointment._id,
@@ -98,6 +95,5 @@ const myAppointment = async (req, res) => {
       return res.status(500).json(new ApiError(500, "Internal Server Error", [err.message]));
   }
 };
-
 
 export {bookAppointment,getAllAppointments,myAppointment}

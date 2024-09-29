@@ -9,7 +9,7 @@ const userProfile = {
   name: '',
   email: '',
   phone: '',
-  address: '',
+  // address: '',
   profilePicture: '',
 };
 
@@ -92,7 +92,7 @@ function ProfilePage() {
           name,
           email,
           phone,
-          address, // Include address in the update
+          // address, // Include address in the update
           profilePicture: profileImage,
         }),
       });
@@ -100,7 +100,7 @@ function ProfilePage() {
       const data = await response.json();
 
       if (response.ok) {
-        setUser({ name, email, phone, address, profilePicture: profileImage });
+        setUser({ name, email, phone, profilePicture: profileImage });
         alert(data.message || "Profile updated successfully!");
       } else {
         setError(data.message || "Failed to update profile.");
@@ -127,7 +127,7 @@ function ProfilePage() {
                 name={user.name}
                 email={user.email}
                 phone={user.phone}
-                address={user.address}
+                address="add your address here "
                 profilePicture={user.profilePicture}
                 onSave={handleSaveProfile}
               />

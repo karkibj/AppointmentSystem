@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { User } from "../models/User.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -49,22 +48,25 @@ const CreateUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select('+password');
+    const userData = await User.findOne({ email }).select('+password');
 
-    if (!user) {
+    if (!userData) {
         throw new ApiError(400, "User not found");
     }
 
-    if (!await user.isPasswordCorrect(password)) {
+    if (!await userData.isPasswordCorrect(password)) {
         throw new ApiError(400, "Incorrect password");
     }
 
-    const { accessToken, refreshToken } = await generateTokens(user._id);
+    const { accessToken, refreshToken } = await generateTokens(userData._id);
 
     res.cookie("accessToken", accessToken);
     res.cookie("refreshToken", refreshToken);
-
-    return res.status(200).json(new ApiResponse(200, { accessToken, refreshToken, user }, "Login successful"));
+    userData.refreshToken=refreshToken;
+    const user=await User.findById(userData._id).select("-password -lastFivePasswords -refreshToken")
+    await userData.save(userData);
+  
+    return res.status(200).json(new ApiResponse(200, { accessToken, refreshToken,user}, "Login successful"));
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -141,27 +143,26 @@ const verifyOTP = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json(new ApiResponse(200, {}, "OTP verified successfully"));
+
+   
 });
 
-// Change Password function
+
 const changePassword = asyncHandler(async (req, res) => {
     const { currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
         throw new ApiError(400, "Current password and new password are required");
     }
-
+    
     const user = await User.findById(req.user._id).select('+password');
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
-    // Verify the current password
     if (!await user.isPasswordCorrect(currentPassword)) {
         throw new ApiError(400, "Current password is incorrect");
     }
-
-    // Update the password
     user.password = newPassword;
     await user.save({ validateBeforeSave: true });
 
