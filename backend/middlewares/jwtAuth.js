@@ -34,8 +34,8 @@ const verifyUser = async (req, res, next) => {
     req.user = user;
     return next();
   } catch (error) {
-    console.error("Error in verifyUser middleware:", error); // Detailed error logging
-    res.status(401).json(new ApiResponse(401, null, 'Invalid token'));
+    // console.error("Error in verifyUser middleware:", error); // Detailed error logging
+    res.status(401).json(new ApiResponse(401, null, 'Session Expired'));
   }
 };
 

@@ -22,17 +22,20 @@ const getAllDoctors = async (req, res) => {
     const allDoctors = await Doctor.find({}).populate('userId');
 =======
 
-// console.log(mongoose.Types.ObjectId.isValid('66e2adf825b0b9bb71d1e65c'));
 
 const getAllDoctors=async (req,res)=>{
+    try{
     const allDoctors=await Doctor.find({}).populate('userId');
     if(!allDoctors){
         return res.json(new ApiResponse(404,null,"Data not found!!"))
     }
     return res.json(new ApiResponse(200,allDoctors,"Doctor data fetched successfully"))
-    // console.log(typeof(allDoctors))
+}
+catch(err){
+    throw new ApiError(500,"Internal server error",[err])
 }
 
+<<<<<<< HEAD
 const getDoctorById=async (req,res)=>{
 >>>>>>> ac26518b198d7811018ae5b47fef8208f233ced2
     
@@ -43,6 +46,9 @@ const getDoctorById=async (req,res)=>{
 
     // If doctors are found, respond with a success message and the doctor data
     return res.json(new ApiResponse(200, allDoctors, "Doctor data fetched successfully"));
+=======
+}
+>>>>>>> 7291fd490d43e24cf72151d9e30d6a1d11872df2
 
     // Debugging: Log the type of allDoctors
     console.log(typeof(allDoctors));
@@ -73,6 +79,7 @@ const getDoctorById = async (req, res) => {
 // Controller to create a new doctor and user account
 const createDoctor = asyncHandler(async (req, res) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Log current user and request for debugging purposes
     console.log(req.user);
     console.log("backend hit");
@@ -88,9 +95,11 @@ const createDoctor = asyncHandler(async (req, res) => {
 =======
     // console.log(req.user)
     // console.log("backend hit")
+=======
+>>>>>>> 7291fd490d43e24cf72151d9e30d6a1d11872df2
     const { name, email, phone, password, specialization } = req.body;
-    // console.log(req.file)
     const role = 'doctor';
+<<<<<<< HEAD
     const profilePicture = req.file ? req.file.path : null; // Assuming you're using `multer` for file uploads
 
     // console.log(req.body);
@@ -102,9 +111,15 @@ const createDoctor = asyncHandler(async (req, res) => {
     }
 
     // Check if a user with the provided email already exists
+=======
+    const profilePicture = req.file ? req.file.path : null; 
+    if (!name || !email || !phone || !password || !specialization) {
+        return res.status(400).json(new ApiError(400, "All fields are required"));
+    }
+>>>>>>> 7291fd490d43e24cf72151d9e30d6a1d11872df2
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-        return res.status(400).json(new ApiError(400, "User with this email already exists"));
+        return res.status(400).json(new ApiError(400, "User with this email already exists",null));
     }
 
 <<<<<<< HEAD
@@ -128,6 +143,7 @@ const createDoctor = asyncHandler(async (req, res) => {
         name,
         email,
         phone,
+<<<<<<< HEAD
         password,  // Assuming the password is hashed using a pre-save hook
         role,
         profilePicture: uploadedImage ? uploadedImage.secure_url : null // Save Cloudinary image URL if uploaded
@@ -138,15 +154,30 @@ const createDoctor = asyncHandler(async (req, res) => {
     console.log(newUser.role);
 
     // Create a new doctor profile, linking it to the newly created user
+=======
+        password, 
+        role,
+        profilePicture: uploadedImage ? uploadedImage.secure_url : null
+    });
+
+    await newUser.save();
+    console.log(newUser.role);
+
+>>>>>>> 7291fd490d43e24cf72151d9e30d6a1d11872df2
     const newDoctor = new Doctor({
         userId: newUser._id,  // Reference to the newly created user
         specialization
     });
 
+<<<<<<< HEAD
     // Save the new doctor to the database
     await newDoctor.save();
 
     // Return a success response with the created doctor data
+=======
+    await newDoctor.save();
+
+>>>>>>> 7291fd490d43e24cf72151d9e30d6a1d11872df2
     return res.status(201).json(new ApiResponse(201, newDoctor, "Doctor created successfully"));
 });
 <<<<<<< HEAD
@@ -205,5 +236,10 @@ const deleteDoctor = async (req, res) => {
     }
 };
 
+<<<<<<< HEAD
 // Export the controller functions to be used in routes
 export { getAllDoctors, getDoctorById, createDoctor, deleteDoctor };
+=======
+  
+export {getAllDoctors,createDoctor,deleteDoctor}
+>>>>>>> 7291fd490d43e24cf72151d9e30d6a1d11872df2

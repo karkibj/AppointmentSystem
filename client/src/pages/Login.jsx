@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../Components/Header';
+import logo from '../pages/login.png';
+import { FaHome } from 'react-icons/fa'; // Importing a home icon
+import Alert from '../Components/common/Alert';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -8,7 +10,8 @@ const Login = () => {
         email: '',
         password: '',
     });
-    const [loading, setLoading] = useState(false); // Loading state to disable button during API calls
+    const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState({ message: '', type: '', visible: false }); // Alert state
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -16,16 +19,28 @@ const Login = () => {
             ...formData,
             [name]: value
         });
+        setAlert({ ...alert, visible: false }); // Hide alert on input change
+    };
+
+    const validateEmail = (email) => {
+        // Simple regex for email validation
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true); // Start loading when form is submitted
+        setLoading(true);
 
         try {
-            // Basic form validation
             if (!formData.email || !formData.password) {
-                alert("Please fill in all the fields.");
+                setAlert({ message: "Please fill in all the fields.", type: 'error', visible: true });
+                setLoading(false);
+                return;
+            }
+
+            if (!validateEmail(formData.email)) {
+                setAlert({ message: "Please enter a valid email.", type: 'error', visible: true });
                 setLoading(false);
                 return;
             }
@@ -39,22 +54,16 @@ const Login = () => {
             });
 
             const data = await response.json();
-            
             if (!response.ok) {
-                // Handle non-200 responses
                 const errorMsg = data.message || "An error occurred during login.";
                 throw new Error(errorMsg);
             }
 
-            // Handle successful login
             const { accessToken, refreshToken, user } = data.data;
-            
-            // Store tokens securely (optional: use httpOnly cookies for sensitive data)
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('userRole', user.role);
 
-            // Role-based redirection
             switch (user.role) {
                 case "admin":
                     navigate('/admin/dashboard', { replace: true });
@@ -66,80 +75,112 @@ const Login = () => {
                     navigate("/", { replace: true });
             }
 
-            alert("Login successful!");
+            setAlert({ message: "Login successful!", type: 'success', visible: true });
+            setFormData({ email: '', password: '' }); // Clear form on success
         } catch (error) {
-            // Handle client-side or network errors
             console.error("Login error:", error);
-            alert(error.message || "An error occurred during login. Please try again.");
+            alert(error.message)
+            setAlert({ message: error.message || "An error occurred during login. Please try again.", type: 'error', visible: true });
         } finally {
-            setLoading(false); // Stop loading
+            setLoading(false);
         }
     };
 
+    const handleCloseAlert = () => {
+        setAlert({ ...alert, visible: false }); // Hide alert
+    };
+
     return (
-        <>
-        <Header/>
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">Doctor Appointment System</h2>
+        <div className="min-h-screen flex items-center justify-center bg-blue-50">
+            <div className="bg-white shadow-lg rounded-2xl flex overflow-hidden max-w-4xl w-full">
+                {/* Left Side with Image */}
+                <div className="w-1/2 bg-blue-100 flex justify-center items-center">
+                    <img
+                        src={logo}
+                        alt="Login Illustration"
+                        className="w-3/4 h-auto"
+                    />
+                </div>
 
-                <form onSubmit={handleSubmit}>
+                {/* Right Side with Form */}
+                <div className="w-1/2 p-8 flex flex-col justify-center">
+                    {/* Returning Home Button */}
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
-                            Email
-                        </label>
-                        <input
-                            onChange={handleInputChange}
-                            value={formData.email}
-                            name="email"
-                            type="email"
-                            id="email"
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                            placeholder="Enter your email"
-                            required
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
-                            Password
-                        </label>
-                        <input
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            name="password"
-                            type="password"
-                            id="password"
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                            placeholder="Enter your password"
-                            required
-                        />
-                    </div>
-
-                    <div className="flex justify-center">
                         <button
-                            type="submit"
-                            className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            disabled={loading} // Disable the button while loading
+                            onClick={() => navigate('/')}
+                            className="flex items-center text-blue-600 hover:text-blue-800 font-semibold transition"
                         >
-                            {loading ? 'Logging in...' : 'Login'}
+                            <FaHome className="mr-2" />Home
                         </button>
                     </div>
-                </form>
 
-                <div className="text-center mt-4">
-                    <p className="text-gray-600 text-sm">
-                        <a href="#" className="text-blue-500 hover:underline">Forgot Password?</a>
-                    </p>
-                    <p className="text-gray-600 text-sm mt-2">
-                        Don't have an account? <a href="/register" className="text-blue-500 hover:underline">Sign Up</a>
-                    </p>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Sign In</h2>
+                    <p className="text-sm text-gray-600 text-center mb-6">Unlock your world.</p>
+
+                    {/* Show Alert if visible */}
+                    {alert.visible && (
+                        <Alert 
+                            message={alert.message} 
+                            type={alert.type} 
+                            onClose={handleCloseAlert} 
+                        />
+                    )}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
+                                Email
+                            </label>
+                            <input
+                                onChange={handleInputChange}
+                                value={formData.email}
+                                name="email"
+                                type="email"
+                                id="email"
+                                className={`w-full p-3 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                placeholder="Enter your email"
+                                required
+                            />
+                        </div>
+
+                        <div className="mb-6">
+                            <label htmlFor="password" className="block text-sm font-semibold text-gray-700">
+                                Password
+                            </label>
+                            <input
+                                value={formData.password}
+                                onChange={handleInputChange}
+                                name="password"
+                                type="password"
+                                id="password"
+                                className={`w-full p-3 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                placeholder="Enter your password"
+                                required
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className={`w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={loading}
+                        >
+                            {loading ? 'Logging in...' : 'Sign In'}
+                        </button>
+                    </form>
+
+                    <div className="text-center mt-6">
+                        <a href="#" className="text-sm text-blue-600 hover:underline">Forgot Password?</a>
+                    </div>
+
+                    <div className="text-center mt-3">
+                        <a href="/register" className="text-sm text-gray-600">
+                            Create an account
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        </>
     );
-    
 };
 
 export default Login;

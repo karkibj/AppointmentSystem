@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle } from 'react-icons/fa';
+import { BeatLoader } from 'react-spinners'; // 
 
 const DoctorCard = ({ doctor }) => {
   const [selectedDay, setSelectedDay] = useState('');
@@ -22,7 +23,7 @@ const DoctorCard = ({ doctor }) => {
 
   const handleBooking = async () => {
     if (!selectedSlot) {
-      alert('Please select a time slot.');
+      setBookingMessage('Please select a time slot.');
       return;
     }
 
@@ -46,8 +47,10 @@ const DoctorCard = ({ doctor }) => {
         navigate('/login');
       } else if (response.ok) {
         setBookingMessage('Appointment booked successfully!');
+        setSelectedDay(''); // Reset selection after booking
+        setSelectedSlot('');
       } else {
-        setBookingMessage(`Error: ${data.message || 'Failed to book appointment'}`);
+        setBookingMessage(data.message || 'Failed to book appointment.');
       }
     } catch (error) {
       setBookingMessage(`Error: ${error.message}`);
@@ -92,6 +95,7 @@ const DoctorCard = ({ doctor }) => {
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
               onClick={() => handleDaySelect(dayInfo.day)}
+              aria-pressed={selectedDay === dayInfo.day}
             >
               {dayInfo.day}
             </button>
@@ -118,6 +122,7 @@ const DoctorCard = ({ doctor }) => {
                   }`}
                   onClick={() => slot.status === 'available' && handleSlotSelect(slot.time)}
                   disabled={slot.status !== 'available'}
+                  aria-disabled={slot.status !== 'available'}
                 >
                   {slot.time}
                 </button>
@@ -135,8 +140,13 @@ const DoctorCard = ({ doctor }) => {
             }`}
             onClick={handleBooking}
             disabled={isBooking}
+            aria-label="Book appointment"
           >
-            {isBooking ? 'Booking...' : 'Book Appointment'}
+            {isBooking ? (
+              <BeatLoader size={8} color="#ffffff" />
+            ) : (
+              'Book Appointment'
+            )}
           </button>
         </div>
       )}

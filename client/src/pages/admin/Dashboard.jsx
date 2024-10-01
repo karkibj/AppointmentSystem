@@ -1,38 +1,74 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../Components/Navbar'; // Adjust the path based on your project structure
-import RecentAppointment from '../Components/RecentAppointment';
+import Sidebar from '../../Components/headerFooter/Navbar'; // Adjust the path based on your project structure
+import RecentAppointment from '../../Components/doctors/RecentAppointment';
 import axios from "axios";
 import { FaUserMd, FaUserInjured, FaCalendarAlt, FaHeartbeat } from 'react-icons/fa';
 
 const Dashboard = () => {
-  // Mock state for dashboard stats (fetch from backend in production)
+  // Mock data for dashboard stats (to be replaced with backend data when available)
   const [stats, setStats] = useState({
-    totalDoctors: 10,
-    totalPatients: 100,
-    appointmentsToday: 5,
-    totalAppointments: 500,
+    totalDoctors: 10,      // Mock value for total doctors
+    totalPatients: 100,    // Mock value for total patients
+    appointmentsToday: 5,  // Mock value for today's appointments
+    totalAppointments: 500 // Mock value for total appointments
   });
 
   const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true); // Added loading state
+  const [error, setError] = useState(null);     // Added error state
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('accessToken'); // Retrieve the token from local storage
-        const response = await axios.get('http://localhost:8080/api/appointment/getAllappointments', {
-          headers: {
-            Authorization: `Bearer ${token}`, // Set the Authorization header
-          },
+        const token = localStorage.getItem('accessToken'); // Retrieve token from local storage
+        
+        // Fetch recent appointments
+        const appointmentRes = await axios.get('http://localhost:8080/api/appointment/getAllappointments', {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        console.log(response.data)
-        setAppointments(response.data.data); // Set the appointments from response
+
+        setAppointments(appointmentRes.data.data); // Set appointments data
       } catch (error) {
+        setError("Failed to load dashboard data. Please try again.");
         console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false); // Stop loading once data is fetched
       }
     };
 
     fetchData();
+
+    // Commented out the stats fetching logic
+    // Future implementation: Replace mock stats with data from backend when available
+    // const fetchStats = async () => {
+    //   try {
+    //     const statsRes = await axios.get('http://localhost:8080/api/stats', {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     });
+    //     setStats(statsRes.data);
+    //   } catch (error) {
+    //     console.error("Error fetching stats data:", error);
+    //   }
+    // };
+    // fetchStats();
+    
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-16 h-16 border-t-4 border-blue-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-red-500 text-lg">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex bg-gray-100 min-h-screen">

@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../Components/Navbar';
-import DoctorTable from '../Components/DoctorTable';
-import DoctorForm from '../Components/DoctorForm';
-import AvailabilityForm from '../Components/AvailabilityForm';
-import Modal from '../Components/Modal';
+import Sidebar from '../../Components/headerFooter/Navbar';
+import DoctorTable from '../../Components/doctors/DoctorTable';
+import DoctorForm from '../../Components/doctors/DoctorForm';
+import AvailabilityForm from '../../Components/doctors/AvailabilityForm';
+import Modal from '../../Components/doctors/Modal';
+import Loader from '../../Components/common/Loader';  // Add a Loader component
+import Alert from '../../Components/common/Alert';    // Add an Alert component for better error display
 
 const ManageDoctors = () => {
   const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(false);  // Loader state
+  const [error, setError] = useState(null);       // Error state
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -26,18 +30,19 @@ const ManageDoctors = () => {
 
   useEffect(() => {
     const fetchDoctors = async () => {
+      setLoading(true);  // Start loader
       try {
         const response = await fetch('http://localhost:8080/api/doctor/');
         const data = await response.json();
         if (response.ok) {
           setDoctors(data.data);
         } else {
-          console.error(data.message);
-          alert('Error fetching doctors');
+          setError(data.message || 'Error fetching doctors');
         }
       } catch (err) {
-        console.error('Error:', err);
-        alert('Error fetching doctors');
+        setError('Error fetching doctors');
+      } finally {
+        setLoading(false);  // Stop loader
       }
     };
     fetchDoctors();
@@ -53,6 +58,7 @@ const ManageDoctors = () => {
 
   const handleAddDoctor = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const token = localStorage.getItem('accessToken');
     const formData = new FormData();
     Object.keys(newDoctor).forEach((key) => {
@@ -69,16 +75,20 @@ const ManageDoctors = () => {
       if (response.ok) {
         setDoctors((prev) => [...prev, data.data]);
         setShowAddForm(false);
+        alert(data.message)
         setNewDoctor({ name: '', email: '', phone: '', password: '', specialization: '', profilePicture: null });
       } else {
-        alert(`Error adding doctor: ${data.message}`);
+        setError(data.message || 'Error adding doctor');
       }
     } catch (err) {
-      alert('Error adding doctor');
+      setError('Error adding doctor');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteDoctor = async (id) => {
+    setLoading(true);
     const token = localStorage.getItem('accessToken');
     try {
       const response = await fetch(`http://localhost:8080/api/doctor/deleteDoctor/${id}`, {
@@ -88,10 +98,12 @@ const ManageDoctors = () => {
       if (response.ok) {
         setDoctors((prev) => prev.filter((doctor) => doctor._id !== id));
       } else {
-        alert('Error deleting doctor');
+        setError('Error deleting doctor');
       }
     } catch (err) {
-      alert('Error deleting doctor');
+      setError('Error deleting doctor');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -101,6 +113,7 @@ const ManageDoctors = () => {
   };
 
   const handleAddAvailability = async () => {
+    setLoading(true);
     const token = localStorage.getItem('accessToken');
     if (!selectedDoctor) return;
 
@@ -116,10 +129,12 @@ const ManageDoctors = () => {
       if (response.ok) {
         setShowAvailabilityModal(false);
       } else {
-        alert('Error adding availability');
+        setError('Error adding availability');
       }
     } catch (err) {
-      alert('Error adding availability');
+      setError('Error adding availability');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,6 +149,11 @@ const ManageDoctors = () => {
       <Sidebar />
       <div className="flex-1 p-8">
         <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">Manage Doctors</h1>
+
+        {loading && <Loader />} {/* Loader while fetching or performing actions */}
+
+        {error && <Alert message={error} onClose={() => setError(null)} />} {/* Error alert */}
+
         <button
           className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded shadow-lg transition duration-300"
           onClick={() => setShowAddForm(!showAddForm)}

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import DoctorCard from '../Components/DoctorCard.jsx'; // Import the card component
+import DoctorCard from '../Components/doctors/DoctorCard.jsx'; // Import the card component
 import '../GetDoctor.css'; // External CSS for styling
-import Navbar from '../Components/Navbar.jsx';
+import Navbar from '../Components/headerFooter/Navbar.jsx';
   
 const GetDoctor = () => {
   const [doctors, setDoctors] = useState([]);

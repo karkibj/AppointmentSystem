@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 
-function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,profilePicture='' ,onSave }) {
+function ProfileDetailsCard({ name = '', email = '', phone = '', address = '', profilePicture = '', onSave }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(name);
   const [editEmail, setEditEmail] = useState(email);
   const [editPhone, setEditPhone] = useState(phone);
   const [editAddress, setEditAddress] = useState(address);
-  const [profileImage, setProfileImage] = useState(profilePicture); // Placeholder image
+  const [profileImage, setProfileImage] = useState(profilePicture);
 
   useEffect(() => {
     setEditName(name);
     setEditEmail(email);
     setEditPhone(phone);
     setEditAddress(address);
-    setProfileImage(profilePicture)
-  }, [name, email, phone, address,profilePicture]);
+    setProfileImage(profilePicture);
+  }, [name, email, phone, address, profilePicture]);
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -26,7 +26,7 @@ function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,p
 
   const handleSave = () => {
     setIsEditing(false);
-    onSave(editName, editEmail, editPhone, editAddress, profileImage); // Save with profileImage
+    onSave(editName, editEmail, editPhone, editAddress, profileImage);
   };
 
   const handleImageChange = (e) => {
@@ -34,27 +34,27 @@ function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,p
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result); // Set the profile image as base64
+        setProfileImage(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-8 mb-10">
+    <div className="bg-white shadow-lg rounded-lg p-8 mb-10 transition-transform transform hover:scale-105">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="flex flex-col items-center md:items-start">
           <img
-            src={profilePicture} // Display selected or default image
+            src={profileImage}
             alt="Profile"
-            className="rounded-full w-32 h-32 mb-6 object-cover border-4 border-indigo-500 shadow-lg"
+            className="rounded-full w-32 h-32 mb-6 object-cover border-4 border-indigo-500 shadow-lg transition-all duration-300 transform hover:scale-105"
           />
           {isEditing && (
             <input
               type="file"
               accept="image/*"
-              onChange={handleImageChange} // Handle image selection
-              className="mt-2"
+              onChange={handleImageChange}
+              className="mt-2 border border-gray-300 rounded-lg p-2 cursor-pointer"
             />
           )}
           <h2 className="text-xl font-semibold mt-4 text-gray-700">{editName}</h2>
@@ -66,13 +66,13 @@ function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,p
             {isEditing ? (
               <div>
                 <button
-                  className="bg-green-500 hover:bg-green-600 text-white py-2 px-5 rounded-lg shadow-lg mr-4"
+                  className="bg-green-500 hover:bg-green-600 text-white py-2 px-5 rounded-lg shadow-lg mr-4 transition duration-300"
                   onClick={handleSave}
                 >
                   Save Profile
                 </button>
                 <button
-                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-5 rounded-lg shadow-lg"
+                  className="bg-red-500 hover:bg-red-600 text-white py-2 px-5 rounded-lg shadow-lg transition duration-300"
                   onClick={handleCancel}
                 >
                   Cancel
@@ -80,7 +80,7 @@ function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,p
               </div>
             ) : (
               <button
-                className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-5 rounded-lg shadow-lg"
+                className="bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-5 rounded-lg shadow-lg transition duration-300"
                 onClick={() => setIsEditing(true)}
               >
                 Edit Profile
@@ -97,7 +97,7 @@ function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,p
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="ml-2 border rounded px-3 py-1"
+                    className="ml-2 border rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   />
                 </div>
                 <div>
@@ -106,7 +106,7 @@ function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,p
                     type="email"
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
-                    className="ml-2 border rounded px-3 py-1"
+                    className="ml-2 border rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   />
                 </div>
                 <div>
@@ -115,7 +115,7 @@ function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,p
                     type="text"
                     value={editPhone}
                     onChange={(e) => setEditPhone(e.target.value)}
-                    className="ml-2 border rounded px-3 py-1"
+                    className="ml-2 border rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   />
                 </div>
                 <div>
@@ -124,7 +124,7 @@ function ProfileDetailsCard({ name = '', email = '', phone = '', address = '' ,p
                     type="text"
                     value={editAddress}
                     onChange={(e) => setEditAddress(e.target.value)}
-                    className="ml-2 border rounded px-3 py-1"
+                    className="ml-2 border rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   />
                 </div>
               </>

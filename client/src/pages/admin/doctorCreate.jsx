@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../DoctorCreate.css'; // Ensure CSS is linked correctly
-import Navbar from '../Components/Navbar';
+import Navbar from '../../Components/headerFooter/Navbar';
 
 const DoctorCreate = () => {
   const [formData, setFormData] = useState({
