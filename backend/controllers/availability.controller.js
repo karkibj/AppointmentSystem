@@ -38,7 +38,6 @@ const addAvailability = async (req, res) => {
         if (!doctor) {
             return res.json(new ApiError(404, "Doctor not found"));
         }
-
         // Generate time slots
         const slots = timeSlotGenerator(startTime, endTime);
 

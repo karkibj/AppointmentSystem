@@ -3,7 +3,6 @@ import { Doctor } from "../../models/Doctor.model.js";
 const updateDoctorAvailability = async (req, res, next) => {
     const { doctorId } = req.params;
     const { day, timeslot } = req.body;
-    console.log(req.body)
 
     try {
         // Find the doctor's availability for the given day and timeslot
@@ -26,10 +25,15 @@ const updateDoctorAvailability = async (req, res, next) => {
             return res.status(400).json({ message: "Timeslot is already reserved" });
         }
 
-        // Update the timeslot status to "reserved"
+        // Update the timeslot status to "reserved" and set the reservedAt field to current time
         await Doctor.updateOne(
             { _id: doctorId, 'availability.day': day, 'availability.timeslot.time': timeslot },
-            { $set: { 'availability.$[].timeslot.$[slot].status': 'reserved' } },
+            { 
+                $set: { 
+                    'availability.$[].timeslot.$[slot].status': 'reserved', 
+                    'availability.$[].timeslot.$[slot].reservedAt': new Date() // Set the reservedAt field
+                }
+            },
             { arrayFilters: [{ 'slot.time': timeslot }] } // Filter to update the correct timeslot
         );
 

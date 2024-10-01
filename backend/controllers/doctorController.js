@@ -5,8 +5,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
-
-
 const getAllDoctors=async (req,res)=>{
     try{
     const allDoctors=await Doctor.find({}).populate('userId');

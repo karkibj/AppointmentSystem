@@ -8,10 +8,14 @@ const TimeSlotSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['available', 'reserved'],
-        message:"{VALUE} is not valid ",
         default: 'available'
+    },
+    reservedAt: { 
+        type: Date,
+        default: null
     }
 });
+
 
 const AvailabilitySchema = new mongoose.Schema({
     day: {
@@ -39,7 +43,7 @@ const DoctorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    availability: [AvailabilitySchema]  // Array of AvailabilitySchema
+    availability: [AvailabilitySchema]  
 });
 
 export const Doctor = mongoose.model('Doctor', DoctorSchema);

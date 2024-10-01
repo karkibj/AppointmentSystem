@@ -16,7 +16,7 @@ const AppointmentSchema = new mongoose.Schema({
         default: Date.now
     },
     day: {
-        type: String,  // You can use a string like "Monday", "Tuesday", or a number (0-6) representing the day of the week.
+        type: String, 
         required: true
     },
     time: {

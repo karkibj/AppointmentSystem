@@ -4,6 +4,7 @@ const app = express();
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from 'cors'
+import cron from "node-cron"
 
 dotenv.config({
     path: "./.env"
@@ -17,10 +18,9 @@ app.use(cors({
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT']
 }));
 
-// Increase body size limits for JSON and URL-encoded data
-app.use(express.json({ limit: '5mb' }));  // Set JSON body limit to 5MB
-app.use(express.urlencoded({ extended: false, limit: '5mb' }));  // Set URL-encoded body limit to 5MB
-app.use(cookieParser()); // Correct usage
+app.use(express.json({ limit: '5mb' }));  
+app.use(express.urlencoded({ extended: false, limit: '5mb' })); 
+app.use(cookieParser()); //
 
 // Import routes
 import errorHandler from './middlewares/errorHandler.js';
@@ -28,6 +28,7 @@ import authRoutes from './routes/Auth.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
 import doctorRoutes from './routes/Doctor.routes.js';
 import userRoutes from './routes/user.route.js';
+import { Doctor } from "./models/Doctor.model.js";
 
 // API routes
 app.use('/api/auth', authRoutes);
@@ -35,6 +36,32 @@ app.use('/api/doctor', doctorRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/user', userRoutes);
 
+cron.schedule('0 0 * * 0', async () => {
+    try {
+        console.log("Running weekly availability reset...");
+
+        // Find slots reserved more than 7 days ago and reset them
+        await Doctor.updateMany(
+            {
+                "availability.timeslot.status": "reserved",
+                "availability.timeslot.reservedAt": { $lte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+            }, 
+            {
+                $set: {
+                    "availability.$[].timeslot.$[elem].status": "available",
+                    "availability.$[].timeslot.$[elem].reservedAt": null
+                }
+            },
+            {
+                arrayFilters: [{ "elem.status": "reserved" }]
+            }
+        );
+
+        console.log("Doctor availability reset successfully");
+    } catch (error) {
+        console.error("Error resetting doctor availability:", error);
+    }
+});
 // Error handling middleware
 app.use(errorHandler);
 
