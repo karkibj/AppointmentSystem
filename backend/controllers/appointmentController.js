@@ -67,7 +67,6 @@ const getAllAppointments=async(req,res)=>{
 
 const myAppointment = async (req, res) => {
   const userId = req.user._id;
-
   try {
       const appointments = await AppointmentModel.find({ userId })
       .populate({
