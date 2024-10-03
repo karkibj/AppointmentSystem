@@ -14,9 +14,6 @@ app.use(cors({
 
 import errorHandler from './middlewares/errorHandler.js';
 
-import authRoutes from './routes/Auth.routes.js';
-import appointmentRoutes from './routes/appointment.routes.js' 
-import doctorRoutes from './routes/Doctor.routes.js';
 
 dotenv.config({
     path: "./.env"
@@ -34,8 +31,7 @@ app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: false, limit: '5mb' })); 
 app.use(cookieParser()); //
 
-// Import routes
-import errorHandler from './middlewares/errorHandler.js';
+
 import authRoutes from './routes/Auth.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';
 import doctorRoutes from './routes/Doctor.routes.js';
@@ -52,7 +48,6 @@ cron.schedule('0 0 * * 0', async () => {
     try {
         console.log("Running weekly availability reset...");
 
-        // Find slots reserved more than 7 days ago and reset them
         await Doctor.updateMany(
             {
                 "availability.timeslot.status": "reserved",

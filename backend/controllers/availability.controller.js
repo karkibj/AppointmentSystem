@@ -3,17 +3,17 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Doctor } from "../models/Doctor.model.js";
 
 const timeSlotGenerator = (startTime, endTime, interval = 30) => {
-    const start = new Date(`1970-01-01T${startTime}:00`);  // Convert start time to Date
-    const end = new Date(`1970-01-01T${endTime}:00`);      // Convert end time to Date
+    const start = new Date(`1970-01-01T${startTime}:00`); 
+    const end = new Date(`1970-01-01T${endTime}:00`);     
     const slots = [];
 
     while (start < end) {
-        const slotStart = start.toTimeString().substring(0, 5);  // Get time in HH:MM format
-        start.setMinutes(start.getMinutes() + interval);         // Increment time by interval
+        const slotStart = start.toTimeString().substring(0, 5); 
+        start.setMinutes(start.getMinutes() + interval);        
         if (start <= end) {
             slots.push({
-                time: slotStart,   // Store each start time as an individual slot
-                status: 'available' // Default status is 'available'
+                time: slotStart,   
+                status: 'available'
             });
         }
     }
@@ -38,18 +38,18 @@ const addAvailability = async (req, res) => {
         if (!doctor) {
             return res.json(new ApiError(404, "Doctor not found"));
         }
-        // Generate time slots
+    
         const slots = timeSlotGenerator(startTime, endTime);
 
-        // Create availability entry
+      
         const availabilityStore = {
             day: day,
             startTime: startTime,
             endTime: endTime,
-            timeslot: slots   // Add generated time slots here
+            timeslot: slots  
         };
 
-        // Add availability to doctor's record
+      
         doctor.availability.push(availabilityStore);
 
         await doctor.save();
@@ -86,11 +86,9 @@ const updateAvailability=async(req,res)=>{
         if (!doctor) {
             return res.json(new ApiError(404, "Doctor not found"));
         }
-
-        // Generate time slots
         const slots = timeSlotGenerator(startTime, endTime);
 
-        // Create availability entry
+
         const availabilityStore = {
             day: day,
             startTime: startTime,

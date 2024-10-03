@@ -12,7 +12,7 @@ const GetDoctor = () => {
 useEffect(()=>{
   const fetchDoctors=async ()=>{
     try{
-      const response= await fetch("http://localhost:8080/api/doctor");
+      const response= await fetch("http://localhost:8080/api/doctor/getDoctor");
       const data=await response.json();
       console.log(data)
       console.log(typeof(data))

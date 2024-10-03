@@ -15,7 +15,7 @@ const DoctorList = () => {
     // Fetch doctor data from API
     const fetchDoctors = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/doctor/');
+        const response = await fetch('http://localhost:8080/api/doctor/getDoctor');
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }

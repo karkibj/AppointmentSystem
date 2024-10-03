@@ -32,7 +32,7 @@ const ManageDoctors = () => {
     const fetchDoctors = async () => {
       setLoading(true);  // Start loader
       try {
-        const response = await fetch('http://localhost:8080/api/doctor/');
+        const response = await fetch('http://localhost:8080/api/doctor/getDoctor');
         const data = await response.json();
         if (response.ok) {
           setDoctors(data.data);

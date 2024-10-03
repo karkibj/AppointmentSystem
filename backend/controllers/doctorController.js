@@ -5,7 +5,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
-// Controller to get all doctors
 const getAllDoctors = async (req, res) => {
     try {
         const allDoctors = await Doctor.find({}).populate('userId');
@@ -18,28 +17,27 @@ const getAllDoctors = async (req, res) => {
     }
 }
 
-// Controller to create a new doctor and user account
 const createDoctor = asyncHandler(async (req, res) => {
     console.log(req.user);
     console.log("backend hit");
 
-    // Destructure relevant information from the request body
+
     const { name, email, phone, password, specialization } = req.body;
     const role = 'doctor'; // Setting user role as 'doctor'
     const profilePicture = req.file ? req.file.path : null; // Assuming you're using multer for file uploads
 
-    // Validate input: All fields are required
+
     if (!name || !email || !phone || !password || !specialization) {
         return res.status(400).json(new ApiError(400, "All fields are required"));
     }
 
-    // Check if a user with the provided email already exists
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
         return res.status(400).json(new ApiError(400, "User with this email already exists", null));
     }
 
-    // Upload the profile picture to Cloudinary, if available
+
     let uploadedImage = null;
     if (profilePicture) {
         uploadedImage = await uploadOnCloudinary(profilePicture);
@@ -75,7 +73,7 @@ const createDoctor = asyncHandler(async (req, res) => {
     return res.status(201).json(new ApiResponse(201, newDoctor, "Doctor created successfully"));
 });
 
-// Controller to delete a doctor and the associated user
+
 const deleteDoctor = async (req, res) => {
     console.log("Backend hit");
     let doctorId = req.params.id.trim();
@@ -115,6 +113,8 @@ const deleteDoctor = async (req, res) => {
         });
     }
 };
+
+
 
 // Export the controller functions to be used in routes
 export { getAllDoctors, createDoctor, deleteDoctor };

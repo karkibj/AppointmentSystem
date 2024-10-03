@@ -7,12 +7,11 @@ import multer from 'multer';
 
 const router = express.Router();
 
-// Configure multer for file uploads
-const upload = multer({ dest: 'uploads/' }); // Files will temporarily be stored in 'uploads/'
 
-// Routes
-router.post('/createDoctor', upload.single('profilePicture'), createDoctor);            // jwtVerification('admin'),
-router.get('/getDoctor', getAllDoctors); // added getDoctor by Dipesh for clairification
+const upload = multer({ dest: 'uploads/' });
+
+router.post('/createDoctor', upload.single('profilePicture'), createDoctor);     
+router.get('/getDoctor', getAllDoctors); // 
 router.delete('/deleteDoctor/:id', jwtVerification('admin'), deleteDoctor);
 router.post('/add-availability/:doctorId',jwtVerification('admin'),addAvailability)
 router.get('/view-availability/:doctorId',viewAvailability)
