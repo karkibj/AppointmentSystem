@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  address:{
+    type:String,
+
+  },
   role: {
     type: String,
     enum: ["user", "doctor", "patient", "admin"],

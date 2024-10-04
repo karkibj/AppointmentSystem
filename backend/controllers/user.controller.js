@@ -15,7 +15,7 @@ const viewProfile = async (req, res) => {
 // Edit user profile
 const editProfile = async (req, res) => {
     try {
-        const allowed_updates = ['name', 'profilePicture', 'phone', 'email'];
+        const allowed_updates = ['name', 'profilePicture', 'phone', 'email', 'address'];
         const updates = Object.keys(req.body);
         const isAllowedUpdates = updates.every((up) => allowed_updates.includes(up));
 
@@ -23,29 +23,25 @@ const editProfile = async (req, res) => {
             return res.status(400).json(new ApiResponse(400, null, "Invalid fields for update"));
         }
 
-        // Validate email format if being updated
         if (updates.includes('email')) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(req.body.email)) {
                 return res.status(400).json(new ApiResponse(400, null, "Invalid email format"));
             }
 
-            // Check if another user already has the same email
             const existingUser = await User.findOne({ email: req.body.email });
             if (existingUser && existingUser._id.toString() !== req.user._id.toString()) {
                 return res.status(400).json(new ApiResponse(400, null, "Email is already in use"));
             }
         }
 
-        // Validate phone number format if being updated
         if (updates.includes('phone')) {
-            const phoneRegex = /^\d{10}$/;  // Example: Validates 10-digit phone numbers
+            const phoneRegex = /^\d{10}$/;
             if (!phoneRegex.test(req.body.phone)) {
                 return res.status(400).json(new ApiResponse(400, null, "Invalid phone number format"));
             }
         }
 
-        // Handle profile picture upload if present
         if (req.file) {
             const uploadedImage = await uploadOnCloudinary(req.file.path);
             if (!uploadedImage) {
@@ -54,14 +50,11 @@ const editProfile = async (req, res) => {
             req.body.profilePicture = uploadedImage.secure_url;
         }
 
-        // Update allowed fields
         updates.forEach((update) => {
             req.user[update] = req.body[update];
         });
 
-        // Save the user profile
         await req.user.save();
-
         return res.status(200).json(new ApiResponse(200, req.user, "Profile updated successfully"));
 
     } catch (error) {
@@ -69,5 +62,6 @@ const editProfile = async (req, res) => {
         return res.status(500).json(new ApiResponse(500, null, "An error occurred while updating the profile"));
     }
 };
+
 
 export { viewProfile, editProfile };
