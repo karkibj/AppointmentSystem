@@ -1,6 +1,7 @@
 import express from 'express';
 import { createDoctor, getAllDoctors, deleteDoctor } from "../controllers/doctorController.js";
 import { addAvailability ,viewAvailability,updateAvailability} from '../controllers/availability.controller.js';
+import { statsData } from '../controllers/stats.controller.js';
 import { jwtVerification } from '../middlewares/roleVerify.js';
 import multer from 'multer';
 
@@ -17,6 +18,7 @@ router.post('/add-availability/:doctorId',jwtVerification('admin'),addAvailabili
 router.get('/view-availability/:doctorId',viewAvailability)
 router.get('/view-availability/:doctorId',viewAvailability)
 router.patch('/update-availability/:doctorId',updateAvailability)
+router.get('/',statsData)
 
 
 export default router;

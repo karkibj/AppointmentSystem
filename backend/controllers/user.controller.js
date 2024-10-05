@@ -1,6 +1,6 @@
 import { User } from "../models/User.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";  // Assuming you're using Cloudinary for image uploads
+import { uploadOnCloudinary } from "../utils/cloudinary.js";  
 
 // View user profile
 const viewProfile = async (req, res) => {
