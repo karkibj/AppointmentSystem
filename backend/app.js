@@ -6,18 +6,7 @@ import cookieParser from "cookie-parser";
 import cors from 'cors'
 import cron from "node-cron"
 
-app.use(cors({
-    origin:"http://localhost:3000",
-    methods:['GET','POST','PATCH','DELETE','PUT']
-}))
-
-
-import errorHandler from './middlewares/errorHandler.js';
-
-import authRoutes from './routes/Auth.routes.js';
-import appointmentRoutes from './routes/appointment.routes.js' 
-import doctorRoutes from './routes/Doctor.routes.js';
-
+// Load environment variables
 dotenv.config({
     path: "./.env"
 });
@@ -26,15 +15,16 @@ const PORT = process.env.PORT || 5173;
 
 // CORS Configuration
 app.use(cors({
-    origin: "http://localhost:3000",
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT']
+    origin: "http://localhost:5173",
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+    credentials: true,  // Allow credentials (cookies, authorization headers) //added by dipesh
 }));
 
 app.use(express.json({ limit: '5mb' }));  
 app.use(express.urlencoded({ extended: false, limit: '5mb' })); 
 app.use(cookieParser()); //
 
-// Import routes
+// Import routes (only once)
 import errorHandler from './middlewares/errorHandler.js';
 import authRoutes from './routes/Auth.routes.js';
 import appointmentRoutes from './routes/appointment.routes.js';

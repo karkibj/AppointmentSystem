@@ -57,7 +57,7 @@ const getAllAppointments=async(req,res)=>{
     
    })   
 
-    return res.status(200).json(new ApiResponse(200,appointmentData,"Appointments fetched sucessfully") )
+    return res.status(200).json(new ApiResponse(200,appointmentData,"Appointments fetched sucessfully"))
 
     }
     catch(err){
