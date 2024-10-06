@@ -14,7 +14,7 @@ const statsData = async (req, res) => {
             {
                 // Join AppointmentModel with UserModel on userId
                 $lookup: {
-                    from: 'users', // The name of the User collection in MongoDB
+                    from: 'users', //
                     localField: 'userId',
                     foreignField: '_id',
                     as: 'user'
@@ -37,12 +37,11 @@ const statsData = async (req, res) => {
                 }
             },
             {
-                // Count the distinct user IDs
+               
                 $count: 'totalPatients'
             }
         ]);
 
-        // Handle total number of patients if no results
         const totalNumberOfPatients = totalPatients.length > 0 ? totalPatients[0].totalPatients : 0;
 
         // Prepare the stats array
