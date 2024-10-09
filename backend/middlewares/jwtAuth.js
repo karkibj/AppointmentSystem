@@ -1,41 +1,48 @@
 import jwt from 'jsonwebtoken';
-import { User } from '../models/User.models.js'; // Correct import statement
+import { User } from '../models/User.models.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 
 const verifyUser = async (req, res, next) => {
   try {
-    // Retrieve token from cookies
-    // const token = 
-    // console.log(token)
-    const token =req.cookies.accessToken || req.headers.authorization?.split(' ')[1]; 
-    // console.log(token)
+    // Retrieve token from cookies or Authorization header
+    const token = req.cookies.accessToken || req.headers.authorization?.split(' ')[1]; 
     
-    // console.log("Token:", token); // For debugging purposes
-
-    // If no token, deny access
+    // If no token is provided, deny access
     if (!token) {
-      return res.status(401).json(new ApiResponse(401, null, "Access denied"));
+      return res.status(401).json(new ApiResponse(401, null, "Access denied. No token provided"));
     }
 
     // Verify the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded || !decoded._id) {
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json(new ApiResponse(401, null, "Session expired. Please log in again."));
+      }
       return res.status(401).json(new ApiResponse(401, null, "Invalid token"));
     }
 
-    // Find the user
+    // If decoded token does not contain _id, deny access
+    if (!decoded || !decoded._id) {
+      return res.status(401).json(new ApiResponse(401, null, "Invalid token payload"));
+    }
+
+    // Find the user by ID
     const user = await User.findById(decoded._id);
   
     if (!user) {
       return res.status(404).json(new ApiResponse(404, null, "User not found"));
     }
 
-    // Attach user to the request
+    // Attach user to the request object
     req.user = user;
+    
+    // Proceed to the next middleware
     return next();
   } catch (error) {
-    // console.error("Error in verifyUser middleware:", error); // Detailed error logging
-    res.status(401).json(new ApiResponse(401, null, 'Session Expired'));
+    console.error("Error in verifyUser middleware:", error);
+    res.status(500).json(new ApiResponse(500, null, 'Internal server error during authentication'));
   }
 };
 
